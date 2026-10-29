@@ -51,3 +51,7 @@ The bundled PDFs and document sources match the companion source packages.
 All experiment code, input data, fitted parameters, predictions and scientific
 results are retained byte-for-byte from the preceding reproducibility package.
 SHA256SUMS.txt covers all payload files except itself.
+
+Public repository: https://github.com/XueT-BZ/Physics-semantic-rf-association
+The manuscript Data Availability Statement and supplementary reproduction
+section identify this repository. Document copies are synchronized.
