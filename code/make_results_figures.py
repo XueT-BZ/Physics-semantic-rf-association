@@ -16,7 +16,7 @@ from sklearn.metrics import precision_recall_curve
 ROOT = Path(__file__).resolve().parents[1]
 R, F, T = ROOT/'results', ROOT/'figures', ROOT/'tables'
 D = R/'figure_data'
-for path in (F, T, D):
+for path in (F, T, D, ROOT/'audit'):
     path.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({'font.family':'DejaVu Sans', 'font.size':9.2,
     'axes.labelsize':9.2, 'xtick.labelsize':8.5, 'ytick.labelsize':8.5,

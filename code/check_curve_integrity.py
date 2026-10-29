@@ -48,5 +48,7 @@ report={
  'recorded_runtime_difference_percent':dict(zip(runtime.mean_observations.astype(str),np.round(runtime.joint_minus_physical_percent,4))),
  'presentation':'Original data y values and curve x locations unchanged. Only errorbar/marker display locations are nudged, as disclosed in manuscript captions.'
 }
-(ROOT/'audit'/'curve_integrity.json').write_text(json.dumps(report,indent=2))
+target=ROOT/'audit'/'curve_integrity.json'
+target.parent.mkdir(parents=True,exist_ok=True)
+target.write_text(json.dumps(report,indent=2))
 print(json.dumps(report,indent=2))

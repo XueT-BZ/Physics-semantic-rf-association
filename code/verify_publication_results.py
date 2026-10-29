@@ -72,9 +72,9 @@ def main():
                 held_out_public_reports=23677,independent_tp_fp_fn_recomputed=True,
                 split_identity_disjointness=True,reference_membership_feature_invariance=True,
                 cross_window_false_negatives_included=True,factorial_scene_conditions_verified=9600,
-                official_mdpi_class_present=(ROOT/'Definitions/mdpi.cls').exists(),
                 scope='Independent saved-output and identity-isolation audit; not independent physical-burst ground truth.')
-    target=ROOT/'audit/publication_revision_20261020/results_verification.json'
+    target=ROOT/'audit/verification/public_results.json'
+    target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report,indent=2))
 

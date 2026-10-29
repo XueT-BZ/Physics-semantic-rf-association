@@ -381,4 +381,8 @@ def main(scenes=40):
 
 
 if __name__ == '__main__':
-    with threadpool_limits(limits=1): main()
+    with threadpool_limits(limits=1):
+        if '--artifacts-only' in sys.argv:
+            artifacts(pd.read_csv(DEST/'summary.csv'))
+        else:
+            main()

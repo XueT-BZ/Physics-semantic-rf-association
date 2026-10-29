@@ -64,6 +64,8 @@ def main():
         'independent_bell_partition_count':len(all_partitions),
         'counterexample_greedy_objective':5,'counterexample_optimum':8,
         'scope':'Checks numerical examples and graph logic; layout also needs rendered visual inspection.'}
-    (ROOT/'audit'/'diagram_semantics.json').write_text(json.dumps(report,indent=2))
+    target=ROOT/'audit'/'diagram_semantics.json'
+    target.parent.mkdir(parents=True,exist_ok=True)
+    target.write_text(json.dumps(report,indent=2))
     print(json.dumps(report,indent=2))
 if __name__=='__main__':main()

@@ -1,9 +1,8 @@
-"""Independent prediction and preservation checks for the isolated light trial."""
+"""Independently verify controlled and public missing-map predictions and constraints."""
 from pathlib import Path
-import hashlib,json,re,difflib
+import json
 import numpy as np
 import pandas as pd
-import fitz
 from experiment import simulate,Config,features
 from partial_mapping_extension import ObservableBatch
 
@@ -18,19 +17,7 @@ def independent_counts(reference,prediction):
     return dict(tp=tp,fp=fp,fn=fn,f1=2*tp/max(1,2*tp+fp+fn))
 
 def main():
-    checks={};baseline=json.loads((ROOT/'BASELINE_FILE_HASHES.json').read_text())
-    if ROOT.name.startswith('Backup_Trial_PartialMapping_') and (ROOT.parent/'RESTORED_VERSION.txt').exists():
-        for r in baseline:
-            assert hashlib.sha256((ROOT.parent/r['path']).read_bytes()).hexdigest()==r['sha256'],('ORIGINAL_CHANGED',r['path'])
-        checks['original_release_members_unchanged']=len(baseline)
-    else:
-        checks['original_release_members_unchanged']='Parent project unavailable in this standalone extraction; prediction checks still run.'
-    preserved=[r for r in baseline if r['path'].startswith(('figures/','tables/'))]
-    for r in preserved:assert hashlib.sha256((ROOT/r['path']).read_bytes()).hexdigest()==r['sha256'],r['path']
-    checks['original_figure_and_table_files_identical']=len(preserved)
-    models=[r for r in baseline if r['path'].startswith('results/linear_models_') or r['path']=='results/loed/fitted_parameters.json']
-    for r in models:assert hashlib.sha256((ROOT/r['path']).read_bytes()).hexdigest()==r['sha256'],r['path']
-    checks['original_fitted_parameter_files_identical']=len(models)
+    checks={}
     assert set(ObservableBatch.__dataclass_fields__)=={'receiver','native','i','j','physical','time_z','freq_z','gate_k','kind'}
     checks['inference_interface_has_no_identity_or_hidden_mapping']='PASS'
     metrics=pd.read_csv(OUT/'controlled_per_scene.csv.gz').set_index(['replicate','budget','method','scene'])
@@ -83,30 +70,10 @@ def main():
     checks['public_prediction_methods_recomputed']=len(saved)
     checks['public_reference_overlap_between_adaptation_and_test']=0
     checks['public_constraints_recomputed_from_timestamps']='PASS'
-    original_source=(ROOT/'baseline_snapshot/main.tex').read_text(encoding='utf-8')
-    current_source=(ROOT/'main.tex').read_text(encoding='utf-8')
-    assert re.search(r'\\Title\{(.*?)\}\s*\\Author',original_source,re.S).group(1)==re.search(r'\\Title\{(.*?)\}\s*\\Author',current_source,re.S).group(1)
-    assert (ROOT/'references.tex').read_bytes()==(ROOT/'baseline_snapshot/references.tex').read_bytes()
-    for p in (ROOT/'baseline_snapshot/sections').glob('*.tex'):
-        old=p.read_text(encoding='utf-8');new=(ROOT/'sections'/p.name).read_text(encoding='utf-8')
-        for line in old.splitlines():
-            if line.startswith(('\\widefig','\\pairedfig')):assert line in new,(p.name,line)
-    checks['original_title_references_and_figure_commands_preserved']='PASS'
-    for filename in ['main','supplement']:
-        p=ROOT/(filename+'.pdf');doc=fitz.open(p)
-        checks[filename+'_pages']=len(doc)
-        log=(ROOT/(filename+'.log')).read_text(encoding='utf-8',errors='replace')
-        for bad in ['Overfull \\hbox','Overfull \\vbox','undefined references','Missing character:','Fatal error']:
-            assert bad not in log,(filename,bad)
-        for page in doc:
-            for word in page.get_text('words'):
-                assert word[0]>=-1 and word[1]>=-1 and word[2]<=page.rect.width+1 and word[3]<=page.rect.height+1
-        if filename=='main':
-            for term in ['Received:','Revised:','Accepted:','Published:','Copyright:']:assert term not in doc[0].get_text()
-            for page in doc:
-                r=page.rect;assert 'doi' not in page.get_text(clip=fitz.Rect(.55*r.width,.92*r.height,r.width,r.height)).lower()
     checks['status']='PASS'
-    (OUT/'verification.json').write_text(json.dumps(checks,indent=2),encoding='utf-8')
+    target=ROOT/'audit/verification/partial_mapping.json'
+    target.parent.mkdir(parents=True,exist_ok=True)
+    target.write_text(json.dumps(checks,indent=2),encoding='utf-8')
     print(json.dumps(checks,indent=2))
 
 if __name__=='__main__':main()

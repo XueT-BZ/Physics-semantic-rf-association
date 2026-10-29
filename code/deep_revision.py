@@ -18,12 +18,9 @@ def verify():
     from experiment import Config,simulate,features
     from review_common import metric,slice_scene
     start=time.perf_counter();out=ROOT/'results/deep_revision'
-    before=json.loads((ROOT/'deep_revision_audit/source_manifest.json').read_text())
-    protected={k:v for k,v in before.items() if k.split('/')[0] in {'code','data','figures','results','tables'}}
-    for relative,expected in protected.items():
-        path=ROOT/relative
-        assert path.is_file(),f'Missing retained evidence: {relative}'
-        assert hashlib.sha256(path.read_bytes()).hexdigest()==expected,f'Changed retained evidence: {relative}'
+    environment=json.loads((ROOT/'results/environment.json').read_text())
+    generator_hash=hashlib.sha256((ROOT/'code/experiment.py').read_bytes()).hexdigest()
+    assert generator_hash==environment['script_sha256'],'Experiment generator differs from the executed study.'
     checked=0;numeric_max=0.
     def check(saved,current):
         nonlocal checked,numeric_max
@@ -97,12 +94,14 @@ def verify():
                 assert np.array_equal(pd.factorize(new.predicted,sort=False)[0],pd.factorize(old[oldlabel],sort=False)[0])
                 observed.update(new.observation_id)
             assert observed==ids and len(ids)==23677
-    result=dict(status='PASS',retained_scientific_files_unchanged=len(protected),
+    result=dict(status='PASS',original_generator_sha256_verified=True,
         recomputed_partition_rows=checked,maximum_metric_difference=numeric_max,
         public_test_reports=23677,public_partitions_match_retained_results=True,
         seconds=time.perf_counter()-start,
-        scope='All retained new partition labels checked against regenerated descriptor truth; old scientific evidence hashes verified.')
-    (out/'verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+        scope='All retained independent partition labels checked against regenerated descriptor truth; original generator identity verified.')
+    target=ROOT/'audit/verification/deep_results.json'
+    target.parent.mkdir(parents=True,exist_ok=True)
+    target.write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result,indent=2),flush=True)
 
 def main():

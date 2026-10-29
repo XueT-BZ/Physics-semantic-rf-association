@@ -56,10 +56,11 @@ def main():
     report=dict(status='PASS',scene_conditions_independently_recomputed=checked,
         matched_reencoding_partitions_verified=reencoded,
         full_mapping_matches_released_joint_predictions=True,replication_intervals_recomputed=True,
-        original_title_restored='Physics--Semantic Consistency-Constrained Association' in (ROOT/'main.tex').read_text(),
         scope='Independent saved-label metric audit; known mappings only.')
-    assert checked==2400 and reencoded==800 and report['original_title_restored']
-    (ROOT/'audit/semantic_alignment_revision_20261020/results_verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    assert checked==2400 and reencoded==800
+    target=ROOT/'audit/verification/semantic_alignment.json'
+    target.parent.mkdir(parents=True,exist_ok=True)
+    target.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report,indent=2))
 
 

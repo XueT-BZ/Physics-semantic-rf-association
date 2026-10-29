@@ -1,0 +1,37 @@
+file,category,purpose,supplementary_sections,imports_from_this_repository
+code/aggregate.py,Nominal benchmark,Aggregate independently executed full replications and confidence intervals.,S1-S6,experiment.py
+code/audit_event_definitions.py,Nominal benchmark,Reconstruct the latent-event ledger from the first saved nominal scene.,S1,experiment.py
+code/check_curve_integrity.py,Numerical verification,Check plotted differences against their saved source observations.,S4,
+code/deep_loed_audit.py,Public records,"Audit timestamp tails, packet references and training-metadata clock fitting.",S15,experiment.py; loed_benchmark.py
+code/deep_mapping.py,Map completion,"Compare map estimators, check identification examples and benchmark bounded search costs.",S15,deep_scoring.py; deep_semantic_stress.py; experiment.py; partial_mapping_extension.py; review_common.py; review_mapping.py
+code/deep_revision.py,Orchestration and verification,Run independent studies or recompute their saved partition metrics.,S15,experiment.py; review_common.py
+code/deep_runtime.py,Computational audit,"Measure greedy, restart and MILP report-path latency and export its table.",S15,experiment.py; review_common.py
+code/deep_scoring.py,Shared inference,Load frozen scoring parameters and verify the reconstructed boosted scorer.,S15,experiment.py; partial_mapping_extension.py
+code/deep_semantic_artifacts.py,Figures and statistics,Export the semantic-stress figure and same-event error-dependence statistics.,S15,deep_semantic_stress.py
+code/deep_semantic_stress.py,Semantic interventions,Generate paired descriptor interventions and their numeric summaries/tables.,S15,deep_scoring.py; experiment.py; partial_mapping_extension.py; review_common.py
+code/experiment.py,Core experiment,"Generate controlled descriptors, fit/calibrate scorers and evaluate association decoders.",S1-S6,
+code/fetch_loed.py,Public data provenance,Fetch and verify the original LoED sample and record publisher checksums.,S7,
+code/format_publication_tables.py,Numeric table export,Export measured-data and original missing-map tables from saved CSVs.,"S7,S9",
+code/loed_benchmark.py,Public benchmark,Build LoED observation/reference splits and evaluate packet association.,S7,experiment.py
+code/make_diagrams.py,Published figures,Generate the editable TikZ method diagrams used by the paper and supplement.,S1-S6,
+code/make_results_figures.py,Figures and tables,"Generate nominal result plots, curve-data exports and numeric tables.",S3-S4,
+code/make_review_artifacts.py,Figures and tables,"Export tables and plots for mapping, risk, exact-decoder and public-sensitivity studies.",S11-S14,review_common.py
+code/partial_mapping_extension.py,Original missing-map probe,Run the controlled one-receiver probe and measured two-class correspondence probe.,S9,experiment.py
+code/reproduce.py,Main entry point,"Run numerical checks, rebuild saved artifacts or rerun all reported experiments.","S6,S14-S15",
+code/review_common.py,Shared metrics and inference,"Provide frozen parameters, partition metrics, objectives and restart decoding.",S11-S15,experiment.py
+code/review_exact.py,Exact-decoder audit,Compare greedy/restart partitions with bounded MILP optima.,S13,experiment.py; review_common.py
+code/review_factorial.py,Scorer-decoder comparison,Recompute pooled pair-count and feasibility summaries from archived predictions.,S14,experiment.py; review_common.py
+code/review_mapping.py,Mapping intervention,"Evaluate wrong maps, missing-map estimation and coordinate/conditional updates.",S11,experiment.py; partial_mapping_extension.py; review_common.py
+code/review_public.py,Public sensitivity,Evaluate training/calibration-block changes on fixed public test captures.,S14,experiment.py; loed_benchmark.py; review_common.py
+code/review_revision.py,Study entry point,"Dispatch the independent mapping, risk, exact-decoder and public audits.",S11-S14,review_mapping.py
+code/review_risks.py,Physical stress,"Run covariance, false-alarm, propagation and fragmentation interventions.",S12,experiment.py; review_common.py
+code/scorer_decoder_factorial.py,Scorer-decoder comparison,Cross four frozen scorers and three decoders on the original test scenes.,"S7,S14",experiment.py
+code/semantic_alignment_audit.py,Alignment intervention,"Test unit/class re-encoding, bypassed class registration and neutral evidence.",S8,experiment.py
+code/test_invariants.py,Mathematical checks,"Check unit/vocabulary invariance, identity isolation, feasibility and the greedy counterexample.","S6,S10",experiment.py
+code/verify_detail_revision.py,Mathematical checks,"Verify the coordinate trap, exact-search allocation guard and state-space arithmetic.",S10-S11,experiment.py; partial_mapping_extension.py; review_common.py; review_mapping.py
+code/verify_diagram_semantics.py,Mathematical checks,Verify the numerical examples and graph logic shown in the conceptual figures.,"S6,S10",
+code/verify_partial_mapping_extension.py,Independent prediction check,"Recompute original missing-map metrics, anchors, traces and public constraints.",S9,experiment.py; partial_mapping_extension.py
+code/verify_publication_results.py,Independent prediction check,"Recompute public TP/FP/FN, reference isolation and crossed-decoder conditions.","S7,S14",loed_benchmark.py
+code/verify_results.py,Independent nominal check,"Rebuild all nominal scenes and verify summaries, saved predictions and fitted linear scores.",S1-S6,experiment.py
+code/verify_review_revision.py,Independent audit check,"Verify conditional-search objectives, reference isolation, pair counts and mapping results.",S11-S14,experiment.py; partial_mapping_extension.py; review_common.py; review_mapping.py; review_risks.py
+code/verify_semantic_alignment.py,Independent alignment check,Recompute known-map/re-encoding partition metrics and replication intervals.,S8,experiment.py

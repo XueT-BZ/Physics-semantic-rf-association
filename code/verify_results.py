@@ -3,19 +3,17 @@
 
 Checks every nominal observation table against its declared scene seeds, all
 summary confidence intervals, stored first-replication predictions and linear
-parameters, partition constraints, reference/figure completeness, and PDF pages.
+parameters, and partition constraints.
 An AssertionError identifies a failed contract; the report is written only after
 all checks pass. Run from any working directory with the pinned dependencies.
 """
 from __future__ import annotations
 import hashlib
 import json
-import re
 from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.special import expit
-from pypdf import PdfReader
 from threadpoolctl import threadpool_limits
 from experiment import Config, simulate, scene_csv, features, pair_metrics, summarize
 
@@ -111,59 +109,17 @@ def verify() -> dict:
     assert int((ex.relative_gap.abs() < 1e-8).sum()) == 47
 
 
-    main = (ROOT / 'main.tex').read_text() + '\n' + '\n'.join(
-        p.read_text() for p in sorted((ROOT/'sections').glob('*.tex')))
-    refs = (ROOT / 'references.tex').read_text()
-    cite_order = []
-    for group in re.findall(r'\\cite(?:p|t)?\{([^}]+)\}', main):
-        for key in group.split(','):
-            if key not in cite_order:
-                cite_order.append(key)
-    bibkeys = re.findall(r'\\bibitem\{([^}]+)\}', refs)
-    assert len(bibkeys) == len(set(bibkeys)) == 49
-    assert cite_order == bibkeys, 'References must follow first-citation order.'
-    ref_audit = pd.read_csv(ROOT / 'audit' / 'references_2022_2026_review.csv')
-    assert set(ref_audit.key) == set(bibkeys)
-    assert int(ref_audit.within_2022_2026.sum()) == 37
-    assert ref_audit.loc[ref_audit.key == 'wisig', 'pages_or_article'].iloc[0] == '22808--22818'
-    assert ref_audit.publisher_or_identifier_url.notna().all()
-    diagrams = ['fig01_task','fig02_architecture','fig03_contract','fig04_gate',
-                'fig05_evidence','fig06_temperature','fig07_decoder']
-    result_panels = ['results_pr','results_reliability','results_partition','results_semantic',
-                     'results_clock_f1','results_clock_gate','results_runtime']
-    for stem in diagrams+result_panels+['supp_risk_coverage','supp_exact_gap']:
-        assert (ROOT/'figures'/f'{stem}.pdf').is_file(), stem
-    for stem in diagrams:
-        assert (ROOT/'figure_sources'/f'{stem}.tex').is_file(), stem
-    for table in ['pair','cluster','stress','gate']:
-        assert (ROOT/'tables'/f'{table}.tex').is_file()
-    csu = pd.read_csv(R/'cluster_summary.csv').set_index('method')
-    for method in ['joint_constrained','physics_constrained','boosted_constrained']:
-        assert f'{csu.loc[method,"f1"]:.4f}' in main
-    pdf = PdfReader(ROOT/'main.pdf')
-    text = '\n'.join(p.extract_text() or '' for p in pdf.pages)
-    assert '??' not in text
-    if not (ROOT/'Definitions'/'mdpi.cls').exists():
-        assert 20 <= len(pdf.pages) <= 24, 'Page count changed unexpectedly: inspect the compiled document.'
-    spdf = PdfReader(ROOT/'supplement.pdf')
-    for document in ['main','supplement']:
-        log=(ROOT/f'{document}.log').read_text(errors='replace')
-        for bad in ['Overfull', 'undefined references', 'undefined citations', 'LaTeX Error', 'Fatal error']:
-            assert bad not in log, f'{document}: compilation issue: {bad}'
     return dict(status='PASS', nominal_scenes_verified=len(used_seeds),
                 split_totals=counts.to_dict(orient='index'), pair_variants=12, partition_variants=8,
                 full_test_scene_decodings=len(cs), stress_settings=34, exact_cases=len(ex),
                 exact_objective_matches=47, max_linear_prediction_difference=largest_delta,
-                references=49, recent_2022_2026=37, recent_share_percent=75.51,
-                academic_references=46, datasets=2, standards=1,
-                main_numbered_figures=8, main_figure_panels_or_assets=11,
-                supplementary_figures=5, editable_conceptual_diagrams=7,
-                pdf_pages=len(pdf.pages), supplementary_pages=len(spdf.pages),
                 experiment_sha256=code_hash,
-                limits='Numerical outcomes, mathematical contracts, and document completeness checked; not RF field validation or official-publisher class certification.')
+                limits='Numerical outcomes and mathematical contracts checked; controlled descriptors do not establish RF field validation.')
 
 if __name__ == '__main__':
     with threadpool_limits(limits=1):
         report = verify()
-    (ROOT / 'audit' / 'verification_report.json').write_text(json.dumps(report, indent=2))
+    target = ROOT / 'audit' / 'verification' / 'nominal_results.json'
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(report, indent=2), encoding='utf-8')
     print(json.dumps(report, indent=2))

@@ -434,6 +434,7 @@ FIGS = {'fig01_task':f1,'fig02_architecture':f2,'fig03_contract':f3,'fig04_gate'
         'fig05_evidence':f5,'fig06_temperature':f6,'fig07_decoder':f7}
 
 def main():
+    (ROOT/'audit').mkdir(parents=True,exist_ok=True)
     audit=[]
     for name,body in FIGS.items():
         tex=SRC/(name+'.tex');tex.write_text(PRE+body+POST)
