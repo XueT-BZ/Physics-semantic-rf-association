@@ -1,0 +1,22 @@
+{
+  "replications": 10,
+  "report_counts": [
+    40,
+    80,
+    120
+  ],
+  "seed_base": 120000000,
+  "selection": "Report count alone; first sufficiently large scene, then a random report subset.",
+  "scorer": "frozen original entropy-weighted linear",
+  "solver_limit_s": 1.0,
+  "numerical_threads": 1,
+  "restart_first_edges": 8,
+  "greedy_and_restart_path_repeats": 3,
+  "milp_path_repeats": 1,
+  "timing_scope": "Native report features, frozen pair scoring, and event decoding with a fixed class registry. Generation, file I/O, waveform detection, and offline map adaptation are excluded.",
+  "evaluation_and_feasibility_audit_excluded_from_timings": true,
+  "milp_storage": "Preallocated int32 sparse indices and float64 values; same full triangle formulation as original audit.",
+  "no_runtime_target_assumed": true,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

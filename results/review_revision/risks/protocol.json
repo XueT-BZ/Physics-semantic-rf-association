@@ -1,0 +1,37 @@
+{
+  "existing_test_scenes": 200,
+  "replications": 10,
+  "scenes_per_replication": 20,
+  "cases": [
+    "nominal",
+    "positive_corr_independent_declaration",
+    "positive_corr_matched",
+    "negative_corr_independent_declaration",
+    "negative_corr_matched",
+    "nlos_excess_delay",
+    "independent_false_alarms_matched_count",
+    "correlated_false_alarms",
+    "fragmented_detections"
+  ],
+  "covariance_positive_rho": 0.8,
+  "covariance_negative_rho": -0.25,
+  "clock_marginal_sd_us": 0.8,
+  "nlos_probability": 0.3,
+  "nlos_mean_us": 8.0,
+  "shared_false_alarm_templates": 3,
+  "matched_false_alarm_control": "Same 12 added reports; independently sampled templates per receiver. Correlated intervention shares each template across receivers.",
+  "fragmentation_probability": 0.2,
+  "seed_base": 86000000,
+  "scorers": [
+    "physics",
+    "joint"
+  ],
+  "decoders": [
+    "components",
+    "assignment",
+    "constrained"
+  ],
+  "refit": false,
+  "correlated_false_alarm_truth": "Each inserted false alarm retains its own singleton reference; no common physical nuisance event is claimed.",
+  "fragmentation_truth": "Inserted fragments retain the same true event and receiver; this intentionally breaks the consolidated-input assumption."
+}

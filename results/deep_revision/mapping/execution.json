@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "seconds": 59.502464999997756,
+  "per_scene_rows": 57600,
+  "map_fits": 720,
+  "feedback_and_sequential_equal_maps": 90,
+  "feedback_comparisons": 90,
+  "zero_receiver_and_gate_violations": true,
+  "self_checks": 8,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numerical_threads": 1
+}

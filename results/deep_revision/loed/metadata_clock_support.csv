@@ -1,0 +1,3 @@
+gateway_a,gateway_b,candidate_pairs,peak_bin_center_s,peak_bin_count,background_99_count,distant_peak_count,refined_support,median_lag_s,supported
+0000024b0b031c97,7276ff002e062804,343,0.9995000000000003,242,0.0,1,251,0.9999850000021979,True
+00000f0c210721f2,00000f0c22433141,38,-4.7645,1,0.0,1,1,-4.764244424004573,False

@@ -1,0 +1,84 @@
+{
+  "dataset_doi": "10.5281/zenodo.4121430",
+  "license": "CC-BY-4.0",
+  "source": "https://zenodo.org/api/records/4121430",
+  "selection": "publisher six-day sample",
+  "status": "VERIFIED_DOWNLOAD",
+  "files": [
+    {
+      "file": "LoED_LoRaWAN_at_edge_dataset-SAMPLE.zip",
+      "bytes": 11667218,
+      "md5": "7370baddc9b546354c26a71cd38981bc",
+      "sha256": "6b9d20ad3a513fde35b05f9f250da6da815068d13cdc78035fcce915b25fc046",
+      "url": "https://zenodo.org/api/records/4121430/files/LoED_LoRaWAN_at_edge_dataset-SAMPLE.zip/content"
+    },
+    {
+      "file": "README.md",
+      "bytes": 2901,
+      "md5": "accd2aad8f6e299274100cd9ced12a9a",
+      "sha256": "6ec508604578c40b16e5a9cfb842f44cf30135d178df00c989792c485467bf9d",
+      "url": "https://zenodo.org/api/records/4121430/files/README.md/content"
+    },
+    {
+      "file": "Laksh_Bhatia_LoED_LoRaWAN_at_the_edge.pdf",
+      "bytes": 392978,
+      "md5": "06794b926606161d3e9f41c1c535d0a8",
+      "sha256": "80fcca64ae4a8ddcd2f4190babe552a9e40d31fceb2ad5e16939856f2d4f4a40",
+      "url": "https://zenodo.org/api/records/4121430/files/Laksh_Bhatia_LoED_LoRaWAN_at_the_edge.pdf/content"
+    }
+  ],
+  "archive_members": [
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/",
+      "bytes": 0
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/02_09_2020.csv",
+      "bytes": 2001715
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._02_09_2020.csv",
+      "bytes": 212
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/02_05_2020.csv",
+      "bytes": 4081203
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._02_05_2020.csv",
+      "bytes": 212
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/03_07_2020.csv",
+      "bytes": 3671087
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._03_07_2020.csv",
+      "bytes": 212
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/02_04_2019.csv",
+      "bytes": 14128694
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._02_04_2019.csv",
+      "bytes": 212
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/03_08_2020.csv",
+      "bytes": 3510652
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._03_08_2020.csv",
+      "bytes": 212
+    },
+    {
+      "name": "LoED_LoRaWAN_at_edge_dataset-SAMPLE/03_03_2019.csv",
+      "bytes": 15969552
+    },
+    {
+      "name": "__MACOSX/LoED_LoRaWAN_at_edge_dataset-SAMPLE/._03_03_2019.csv",
+      "bytes": 212
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "conditions": [
+    "same_class_collisions",
+    "dense_same_class_collisions"
+  ],
+  "replications": 10,
+  "adaptation_scenes": 5,
+  "test_scenes_per_replication": 40,
+  "adaptation_seed": "112000000+100000*r+j",
+  "test_seed": "113000000+100000*r+j",
+  "hidden_seed": "114000000+r",
+  "known_receiver": 0,
+  "unknown_receivers": [
+    1,
+    2,
+    3
+  ],
+  "anchors": 0,
+  "classes": 4,
+  "scorers": [
+    "joint",
+    "unweighted",
+    "boosted"
+  ],
+  "methods": [
+    "unresolved",
+    "reference",
+    "spectral",
+    "coordinate",
+    "exact",
+    "feedback",
+    "known"
+  ],
+  "scorer_parameters_and_interventions_frozen": true,
+  "test_labels_used_for_selection": false,
+  "purpose": "Connect same-class collision stress to unknown map estimation and event association",
+  "scenario_source": "code/deep_semantic_stress.py; original and dense collision probabilities0.25 and0.65",
+  "relationship_to_nominal": "Independent newly generated seeds; no comparisons use nominal historical test labels"
+}

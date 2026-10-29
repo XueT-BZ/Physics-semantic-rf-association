@@ -1,0 +1,16 @@
+{
+  "original_release_members_unchanged": 258,
+  "original_figure_and_table_files_identical": 41,
+  "original_fitted_parameter_files_identical": 11,
+  "inference_interface_has_no_identity_or_hidden_mapping": "PASS",
+  "controlled_prediction_groups_independently_recomputed": 6400,
+  "anchors_and_withheld_mapping_metrics": "PASS",
+  "objective_traces_monotone_and_runs_converged": "PASS",
+  "public_prediction_methods_recomputed": 4,
+  "public_reference_overlap_between_adaptation_and_test": 0,
+  "public_constraints_recomputed_from_timestamps": "PASS",
+  "original_title_references_and_figure_commands_preserved": "PASS",
+  "main_pages": 29,
+  "supplement_pages": 11,
+  "status": "PASS"
+}

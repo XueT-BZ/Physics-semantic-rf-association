@@ -1,0 +1,15 @@
+\subsection{Class evidence under harder descriptor conditions}\label{sec:deep_semantic}
+Eight conditions use 400 new scenes each, with ten replications of 40 scenes. Four frozen scorers receive correct maps to isolate class-evidence quality. Semantic interventions preserve physical reports; dense conditions share a separate matched physical reference. Supplementary Section S15 specifies probability models, seeds, and intervals.
+
+Nominal near-collisions have independent classes, with agreement probability $1/4$: 312 of 1303 copied-event parent pairs match in the new sample. Forcing copies to share the parent's class lowers weighted, unweighted, and boosted F1 from 0.7747, 0.7925, and 0.8226 to 0.7010, 0.7096, and 0.7279, respectively. Physical-only F1 remains 0.6773, attributing part of the semantic gain to class independence.
+
+Increasing copy probability from 0.25 to 0.65 gives boosted F1 of 0.6335 with independent classes and 0.4482 with shared classes, versus physical-only F1 of 0.4460. The paired boosted-minus-physical gain is 0.0021 with interval $[-0.0113,0.0155]$; both linear intervals also include zero. Correct registration offers little event discrimination here.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Semantic stress tests: mean event-pair F1 across ten replication means, with 400 scenes per row and known maps. Semantic interventions preserve physical observations; dense rows share a separate physical reference. Error marginals match in law, though realized counts can differ. All outputs satisfy receiver and gate constraints. Supplementary Section S15 gives full intervals.}\label{tab:deep_semantic}
+\small\setlength{\tabcolsep}{4pt}\input{tables/deep_semantic_stress}
+\end{adjustwidth}\end{table}
+
+Class imbalance and receiver-specific classifiers reduce gains (Table~\ref{tab:deep_semantic}). The latter retain error probability 0.12 but vary confusion destinations and confidence ranges, separating correct column registration from reliable recognition.
+
+Sharing one error flag and wrong family across an event preserves marginal laws from an independent-error control. Weighted F1 rises from 0.7714 to 0.8334, a paired gain of 0.0620 with interval $[0.0532,0.0708]$. Agreement on a wrong family can preserve event compatibility, so event F1 does not certify class correctness or establish a universal effect of correlated errors.

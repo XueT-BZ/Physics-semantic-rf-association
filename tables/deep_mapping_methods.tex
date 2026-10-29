@@ -1,0 +1,24 @@
+\begin{tabularx}{\linewidth}{@{}lYrr@{}}\toprule
+Scorer & Map estimator & Correct / hidden & Event-pair F1 [95\% CI] \\\midrule
+Weighted linear & Unresolved & 21/120 & 0.5316 [0.5119, 0.5514] \\
+Weighted linear & Reference only & 113/120 & 0.7565 [0.7224, 0.7906] \\
+Weighted linear & Spectral sync. & 114/120 & 0.7712 [0.7548, 0.7877] \\
+Weighted linear & Spectral + coordinate & 114/120 & 0.7712 [0.7548, 0.7877] \\
+Weighted linear & Coordinate & 70/120 & 0.7005 [0.6541, 0.7469] \\
+Weighted linear & Exact block & 120/120 & 0.7786 [0.7718, 0.7853] \\
+\addlinespace
+Unweighted linear & Unresolved & 21/120 & 0.4695 [0.4452, 0.4937] \\
+Unweighted linear & Reference only & 118/120 & 0.7912 [0.7713, 0.8110] \\
+Unweighted linear & Spectral sync. & 120/120 & 0.7997 [0.7913, 0.8080] \\
+Unweighted linear & Spectral + coordinate & 120/120 & 0.7997 [0.7913, 0.8080] \\
+Unweighted linear & Coordinate & 66/120 & 0.7078 [0.6478, 0.7678] \\
+Unweighted linear & Exact block & 120/120 & 0.7997 [0.7913, 0.8080] \\
+\addlinespace
+Boosted & Unresolved & 21/120 & 0.4458 [0.4230, 0.4686] \\
+Boosted & Reference only & 114/120 & 0.7995 [0.7645, 0.8345] \\
+Boosted & Spectral sync. & 114/120 & 0.8134 [0.7923, 0.8344] \\
+Boosted & Spectral + coordinate & 114/120 & 0.8134 [0.7923, 0.8344] \\
+Boosted & Coordinate & 69/120 & 0.7290 [0.6754, 0.7826] \\
+Boosted & Exact block & 120/120 & 0.8232 [0.8183, 0.8282] \\
+\addlinespace
+\bottomrule\end{tabularx}

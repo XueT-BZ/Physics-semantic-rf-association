@@ -1,0 +1,18 @@
+{
+  "controlled": {
+    "known_map_scene_f1_matches_original": 800,
+    "repetitions": 10,
+    "test_scenes": 800
+  },
+  "public": {
+    "adaptation_reports": 15254,
+    "test_reports": 8423,
+    "known_map_counts_match_original": true
+  },
+  "status": "PASS",
+  "seconds": 8.411685600000055,
+  "original_generator_sha256": "cdec8de8c350e454e9cf450eebc5195dc7f807ff45f40a5b9503696e9d611af4",
+  "protocol_sha256": "72c074cdaa9acc367d4afa2a365dda41f331230c87ecb5c8ae4dd21b465a554b",
+  "no_refitted_scorers": true,
+  "original_entropy_weighted_score_preserved": true
+}

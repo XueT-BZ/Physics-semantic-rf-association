@@ -1,0 +1,12 @@
+# Environment used for the added measured and factorial experiments, Python 3.12.14.
+# Original controlled experiment environment remains documented in requirements.txt.
+numpy==2.5.4
+pandas==3.0.1
+scipy==1.17.0
+scikit-learn==1.8.0
+threadpoolctl==3.6.0
+pypdf==6.10.0
+PyMuPDF==1.26.7
+Pillow==12.3.0
+# Required only to regenerate the already delivered statistical figures.
+matplotlib==3.10.8

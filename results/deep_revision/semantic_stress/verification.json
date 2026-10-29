@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "elapsed_seconds": 27.59769040000174,
+  "scene_outcomes": 12800,
+  "traced_original_equalities": 800,
+  "physical_arrays_unchanged_in_semantic_only_conditions": true,
+  "physical_only_results_identical_for_paired_semantic_conditions": true,
+  "all_receiver_and_gate_violations_zero": true,
+  "nominal_same_class_collision_pairs": 312,
+  "nominal_collision_pairs": 1303,
+  "nominal_observed_same_class_fraction": 0.23944742900997698,
+  "nominal_expected_same_class_fraction": 0.25,
+  "inference_features_unchanged_when_truth_and_clutter_flags_altered": true,
+  "separate_independent_test_seeds": true,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0"
+}

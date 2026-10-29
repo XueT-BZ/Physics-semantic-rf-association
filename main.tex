@@ -1,0 +1,62 @@
+% Sensors-style submission draft. The bundled compatibility class is explicitly
+% identified; official Definitions/mdpi.cls takes precedence when supplied.
+\IfFileExists{Definitions/mdpi.cls}{
+\documentclass[sensors,article,submit,moreauthors]{Definitions/mdpi}
+}{\documentclass[sensors,article,submit,moreauthors]{Definitions/sensors-local}}
+\AddToHook{begindocument/end}{\ifcsname nolinenumbers\endcsname\nolinenumbers\fi}
+\ifcsname nolinenumbers\endcsname\let\linenumbers\nolinenumbers\fi
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,array,longtable,graphicx,changepage}
+\usepackage{enumitem,float,placeins}
+\setlength{\headheight}{20pt}
+% Explicit table labels and a supported indicator glyph avoid PDF extraction ambiguity.
+\captionsetup[table]{name=Table,labelformat=simple,labelsep=period}
+% Draft presentation: suppress publisher metadata without editing mdpi.cls.
+\ifcsname contentleftcolumn\endcsname
+  \renewcommand{\contentleftcolumn}{}
+\fi
+\fancyfoot[R]{}
+\makeatletter
+\apptocmd{\ps@plain}{\fancyfoot[R]{}}{}{\PackageError{manuscript}{Cannot clear the first-page DOI footer}{Check the publisher page-style definition.}}
+\makeatother
+\ifdefined\pdfminorversion\pdfminorversion=7\fi
+\floatstyle{ruled}\newfloat{psalgorithm}{tbp}{loa}\floatname{psalgorithm}{Algorithm}\floatstyle{plain}
+\firstpage{1}\makeatletter\setcounter{page}{\@firstpage}\makeatother
+\pubvolume{1}\issuenum{1}\articlenumber{0}\pubyear{2026}\copyrightyear{2026}
+\datereceived{ }\daterevised{ }\dateaccepted{ }\datepublished{ }
+\makeatletter\@ifundefined{Proposition}{\newtheorem{Proposition}{Proposition}}{}\makeatother
+\newcommand{\R}{\mathbb R}\newcommand{\ind}{\mathbf{1}}
+\newcommand{\sigmoid}{\operatorname{sigmoid}}\newcommand{\logit}{\operatorname{logit}}
+\newcommand{\Var}{\operatorname{Var}}\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\widefig}[4][!htb]{\begin{figure}[#1]\begin{adjustwidth}{-\extralength}{0cm}\centering
+\includegraphics[width=\linewidth]{figures/#2.pdf}\caption{#3}\label{#4}\end{adjustwidth}\end{figure}}
+\newcommand{\pairedfig}[6]{\begin{figure}[!t]\begin{adjustwidth}{-\extralength}{0cm}\centering
+\begin{minipage}[t]{.492\linewidth}\centering\includegraphics[width=\linewidth]{figures/#1.pdf}\\[-1pt]{\small\textbf{(a)} #2}\end{minipage}\hfill
+\begin{minipage}[t]{.492\linewidth}\centering\includegraphics[width=\linewidth]{figures/#3.pdf}\\[-1pt]{\small\textbf{(b)} #4}\end{minipage}
+\caption{#5}\label{#6}\end{adjustwidth}\end{figure}}
+\renewcommand{\topfraction}{.94}\renewcommand{\bottomfraction}{.8}\renewcommand{\textfraction}{.06}\renewcommand{\floatpagefraction}{.75}
+\setcounter{topnumber}{3}\setcounter{bottomnumber}{2}\setcounter{totalnumber}{4}
+\Title{Physics--Semantic Consistency-Constrained Association of\newline Heterogeneous RF Observations for Multi-Receiver\newline Communication Signal Monitoring}
+\newcommand{\orcidauthorC}{0009-0007-5168-523X}
+\Author{Yuanfeng Gao $^{1,2}$, Wenbo Xu $^{1}$ and Bojun Zhao $^{2,}$*\orcidC{}}
+\AuthorNames{Yuanfeng Gao, Wenbo Xu and Bojun Zhao}
+\address{%
+$^{1}$\quad Beijing University of Posts and Telecommunications, Beijing 100876, China; xuwb@bupt.edu.cn (W.X.)\\
+$^{2}$\quad The 54th Research Institute of China Electronics Technology Group Corporation, Shijiazhuang 050081, China; qweasdzxc19772026@163.com (Y.G.)}
+\corres{Correspondence: 2642704942@qq.com}
+\abstract{We study semantic alignment of heterogeneous RF receiver reports whose native class-probability columns may have different meanings and partly missing correspondences. A known reference vocabulary fixes the common class names, while physical report groups provide evidence for the missing maps. Receiver-pair score tables support exact conditional search within a small vocabulary. The recovered maps then support event association under receiver exclusivity and pairwise physical gates. We compare reference-only fitting, coordinate updates, and an adapted spectral synchronization method. Independent four-class tests recover 120/120 hidden entries across ten map interventions. Five adaptation scenes per intervention restore event-pair F1 to 0.7997 with unweighted linear scoring and 0.8232 with boosted scoring. Spectral synchronization gives comparable results, and alternating event updates provide no additional accuracy gain in the tested settings. Dense same-class collisions reduce event F1 to about 0.45 despite complete map recovery. Shared wrong class predictions can preserve event compatibility, showing that class registration, class correctness, and event identity are distinct properties. An auxiliary two-gateway LoED check gives reference-packet F1 of 0.9975. Clock fitting from training metadata reproduces that result, although packet-reference ambiguity and remaining supervision limit its interpretation. Validation of the class-probability mechanism relies on controlled descriptors.}
+\keyword{semantic alignment; heterogeneous RF observations; multi-sensor fusion; signal reconnaissance; physical consistency}
+\begin{document}
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_methodology}
+\input{sections/04_experiments}
+\input{sections/04b_discussion}
+\input{sections/05_conclusions}
+\input{sections/06_backmatter}
+\FloatBarrier
+\begin{adjustwidth}{-\extralength}{0cm}
+\begingroup\linespread{1.00}\selectfont\input{references.tex}\endgroup
+\end{adjustwidth}
+\end{document}

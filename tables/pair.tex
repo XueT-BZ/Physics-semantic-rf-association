@@ -1,0 +1,18 @@
+\begin{tabularx}{\linewidth}{@{}Yrrrr@{}}
+\toprule
+Method & AUROC & AP [95\% CI] & Brier & NLL \\
+\midrule
+Timing only & 0.9135 & 0.2864 [0.2799, 0.2928] & 0.0469 & 0.1435 \\
+Frequency only & 0.8995 & 0.2550 [0.2476, 0.2624] & 0.0502 & 0.1611 \\
+Semantics only & 0.7785 & 0.1607 [0.1583, 0.1630] & 0.0563 & 0.2119 \\
+Physical, ungated & 0.9831 & 0.6885 [0.6744, 0.7027] & 0.0253 & 0.0741 \\
+Joint linear, ungated & 0.9885 & 0.7963 [0.7878, 0.8048] & 0.0211 & 0.0644 \\
+Boosted joint, ungated & 0.9910 & 0.8346 [0.8278, 0.8414] & 0.0183 & 0.0562 \\
+Raw-frequency feature & 0.9868 & 0.7757 [0.7665, 0.7850] & 0.0227 & 0.0696 \\
+Unweighted semantics, ungated & 0.9899 & 0.8202 [0.8120, 0.8284] & 0.0198 & 0.0611 \\
+Joint linear, gated & 0.9884 & 0.7979 [0.7893, 0.8065] & 0.0209 & 0.0638 \\
+Joint linear, gated + $T$ & 0.9884 & 0.7979 [0.7893, 0.8065] & 0.0208 & 0.0637 \\
+Physical, gated + $T$ & 0.9829 & 0.6890 [0.6747, 0.7032] & 0.0250 & 0.0734 \\
+Boosted joint, gated + $T$ & 0.9908 & 0.8343 [0.8274, 0.8412] & 0.0183 & 0.0569 \\
+\bottomrule
+\end{tabularx}

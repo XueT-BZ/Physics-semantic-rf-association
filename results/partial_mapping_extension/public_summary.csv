@@ -1,0 +1,5 @@
+method,mapping_accuracy,adaptation_reports,test_reports,receiver_conflicts,gate_violations,tp,fp,fn,f1
+completion,0.0,15254,8423,0,0,35,2,479,0.12704174228675136
+sequential,1.0,15254,8423,0,0,511,1,3,0.9961013645224172
+feedback,1.0,15254,8423,0,0,511,1,3,0.9961013645224172
+known,1.0,15254,8423,0,0,511,1,3,0.9961013645224172

@@ -1,0 +1,607 @@
+[
+  {
+    "setting": "original_split",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02",
+      "2020-05-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.99,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.4999925000010986,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": -0.49999250000109885
+    },
+    "clock_training_pairs": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "training_pairs": 256,
+        "median_difference_s": 0.9999850000021979
+      }
+    ],
+    "clock_support": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "reference_pairs": 256,
+        "supported": true
+      },
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 0.003025170001565151,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          8.241961169512136
+        ],
+        "scale": [
+          1.4800242400663273
+        ],
+        "coefficient": [
+          -2.643674787589365
+        ],
+        "intercept": -11.654177269886047,
+        "temperature": 0.10000051784853438
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          8.241961169512136,
+          0.7991901037332889,
+          0.7501525489543462
+        ],
+        "scale": [
+          1.4800242400663273,
+          0.4006061430233738,
+          0.43292459187674176
+        ],
+        "coefficient": [
+          -2.046726725823723,
+          -0.7871088515134735,
+          -1.862215228169916
+        ],
+        "intercept": -11.935087875370712,
+        "temperature": 0.10843856785178302
+      }
+    },
+    "training_positive_pairs": 257,
+    "training_pairs": 18027
+  },
+  {
+    "setting": "first_two_train",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.99,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.0,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": 0.0
+    },
+    "clock_training_pairs": [],
+    "clock_support": [
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 1.003010170003763,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          2.7436963347745236
+        ],
+        "scale": [
+          0.907259721033133
+        ],
+        "coefficient": [
+          -1.268519954660247
+        ],
+        "intercept": -9.446354098189815,
+        "temperature": 9.999935466264182
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          2.7436963347745236,
+          0.730087502804577,
+          0.7072021539151896
+        ],
+        "scale": [
+          0.907259721033133,
+          0.44391411450094004,
+          0.45504644533597455
+        ],
+        "coefficient": [
+          -1.1461811966365534,
+          -0.7510050137869736,
+          -0.7494532268936723
+        ],
+        "intercept": -9.478076814799026,
+        "temperature": 9.999944486665523
+      }
+    },
+    "training_positive_pairs": 1,
+    "training_pairs": 4457
+  },
+  {
+    "setting": "latest_train_only",
+    "status": "evaluated",
+    "training": [
+      "2020-05-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.99,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.4999925000010986,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": -0.49999250000109885
+    },
+    "clock_training_pairs": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "training_pairs": 256,
+        "median_difference_s": 0.9999850000021979
+      }
+    ],
+    "clock_support": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "reference_pairs": 256,
+        "supported": true
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 0.003025170001565151,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          8.186883124239078
+        ],
+        "scale": [
+          1.5746549035792035
+        ],
+        "coefficient": [
+          -2.762840366781268
+        ],
+        "intercept": -11.157536254384091,
+        "temperature": 0.10000053268042304
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          8.186883124239078,
+          0.8218865143699337,
+          0.7642593957258659
+        ],
+        "scale": [
+          1.5746549035792035,
+          0.3826082485608151,
+          0.4244608012179689
+        ],
+        "coefficient": [
+          -2.1129545803248067,
+          -0.6628962081705829,
+          -1.7706264850382096
+        ],
+        "intercept": -11.310981607648404,
+        "temperature": 0.10578553706274833
+      }
+    },
+    "training_positive_pairs": 256,
+    "training_pairs": 13570
+  },
+  {
+    "setting": "second_train_only",
+    "status": "insufficient_training_classes",
+    "training": [
+      "2019-04-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.99,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.0,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": 0.0
+    },
+    "clock_training_pairs": [],
+    "clock_support": [],
+    "calibration_reference_pairs": 434,
+    "gate_s": 1.003010170003763,
+    "models": {},
+    "training_positive_pairs": 0,
+    "training_pairs": 0
+  },
+  {
+    "setting": "early_calibration",
+    "status": "insufficient_calibration_matches",
+    "training": [
+      "2019-03-03"
+    ],
+    "calibration": "2019-04-02",
+    "clock_support": [
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ]
+  },
+  {
+    "setting": "middle_calibration",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02"
+    ],
+    "calibration": "2020-05-02",
+    "gate_quantile": 0.99,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.0,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": 0.0
+    },
+    "clock_training_pairs": [],
+    "clock_support": [
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 256,
+    "gate_s": 2.0008868999984544,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          2.146750224215411
+        ],
+        "scale": [
+          0.8098565778363557
+        ],
+        "coefficient": [
+          -1.0531285658939564
+        ],
+        "intercept": -8.734389295632594,
+        "temperature": 5.0586261071520395
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          2.146750224215411,
+          0.730087502804577,
+          0.7072021539151896
+        ],
+        "scale": [
+          0.8098565778363557,
+          0.44391411450094004,
+          0.45504644533597455
+        ],
+        "coefficient": [
+          -1.1202792200416416,
+          -0.7707127620711443,
+          -0.7631931738558617
+        ],
+        "intercept": -9.47718211370529,
+        "temperature": 3.9636274782138714
+      }
+    },
+    "training_positive_pairs": 1,
+    "training_pairs": 4457
+  },
+  {
+    "setting": "uncorrected_clocks",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02",
+      "2020-05-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.99,
+    "clock_correction": false,
+    "offsets_s": {
+      "0000024b0b031c97": 0.0,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": 0.0
+    },
+    "clock_training_pairs": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "training_pairs": 256,
+        "median_difference_s": 0.9999850000021979
+      }
+    ],
+    "clock_support": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "reference_pairs": 256,
+        "supported": true
+      },
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 1.003010170003763,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          2.6703781680783543
+        ],
+        "scale": [
+          0.9185655535750669
+        ],
+        "coefficient": [
+          -2.293678168778519
+        ],
+        "intercept": -6.996836681702698,
+        "temperature": 9.999958853014887
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          2.6703781680783543,
+          0.7987933134063988,
+          0.7503044392782021
+        ],
+        "scale": [
+          0.9185655535750669,
+          0.4009021774244006,
+          0.43283679103979233
+        ],
+        "coefficient": [
+          -3.50999649473071,
+          -2.4102439113649234,
+          -2.9667151938732688
+        ],
+        "intercept": -16.246173537675705,
+        "temperature": 0.42160013130100843
+      }
+    },
+    "training_positive_pairs": 257,
+    "training_pairs": 18066
+  },
+  {
+    "setting": "gate_quantile_095",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02",
+      "2020-05-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.95,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.4999925000010986,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": -0.49999250000109885
+    },
+    "clock_training_pairs": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "training_pairs": 256,
+        "median_difference_s": 0.9999850000021979
+      }
+    ],
+    "clock_support": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "reference_pairs": 256,
+        "supported": true
+      },
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 0.001,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          9.33290630759478
+        ],
+        "scale": [
+          1.5702500687787257
+        ],
+        "coefficient": [
+          -2.385400580224919
+        ],
+        "intercept": -10.732795999359617,
+        "temperature": 0.10000062716210259
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          9.33290630759478,
+          0.7991901037332889,
+          0.7501525489543462
+        ],
+        "scale": [
+          1.5702500687787257,
+          0.4006061430233738,
+          0.43292459187674176
+        ],
+        "coefficient": [
+          -1.9522363055251775,
+          -0.6440103707161576,
+          -1.9040269269972185
+        ],
+        "intercept": -11.475483774950066,
+        "temperature": 0.1139658955463181
+      }
+    },
+    "training_positive_pairs": 257,
+    "training_pairs": 18027
+  },
+  {
+    "setting": "gate_quantile_0999",
+    "status": "evaluated",
+    "training": [
+      "2019-03-03",
+      "2019-04-02",
+      "2020-05-02"
+    ],
+    "calibration": "2020-07-03",
+    "gate_quantile": 0.999,
+    "clock_correction": true,
+    "offsets_s": {
+      "0000024b0b031c97": 0.4999925000010986,
+      "00000f0c210721f2": 0.0,
+      "00000f0c22433141": 0.0,
+      "7276ff002e062804": -0.49999250000109885
+    },
+    "clock_training_pairs": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "training_pairs": 256,
+        "median_difference_s": 0.9999850000021979
+      }
+    ],
+    "clock_support": [
+      {
+        "gateway_a": "0000024b0b031c97",
+        "gateway_b": "7276ff002e062804",
+        "reference_pairs": 256,
+        "supported": true
+      },
+      {
+        "gateway_a": "00000f0c210721f2",
+        "gateway_b": "00000f0c22433141",
+        "reference_pairs": 1,
+        "supported": false
+      }
+    ],
+    "calibration_reference_pairs": 434,
+    "gate_s": 3.307620509001805,
+    "models": {
+      "timing": {
+        "columns": [
+          0
+        ],
+        "mean": [
+          1.678935208155772
+        ],
+        "scale": [
+          0.7323250245633486
+        ],
+        "coefficient": [
+          -10.786234941654378
+        ],
+        "intercept": -24.550291498232184,
+        "temperature": 0.16569211743210774
+      },
+      "metadata": {
+        "columns": [
+          0,
+          1,
+          2
+        ],
+        "mean": [
+          1.678935208155772,
+          0.7991901037332889,
+          0.7501525489543462
+        ],
+        "scale": [
+          0.7323250245633486,
+          0.4006061430233738,
+          0.43292459187674176
+        ],
+        "coefficient": [
+          -6.174710170499233,
+          -1.8148575029415592,
+          -2.4484875312832024
+        ],
+        "intercept": -19.838984513438348,
+        "temperature": 0.6053256909205302
+      }
+    },
+    "training_positive_pairs": 257,
+    "training_pairs": 18027
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "checks": {
+    "conditional_pair_tables_match_direct_576_state_enumeration": true,
+    "observable_adapter_is_independent_of_reference_labels": true,
+    "restart_recovers_four_node_score_8_instead_of_5": true,
+    "matched_alarm_counts_and_fragment_recall_bound": true,
+    "400_adaptation_seeds_disjoint_from_2400_nominal_seeds": true,
+    "adaptation_disjoint_from_historical_stress_and_small_exact_seeds": true,
+    "sequential_feedback_tie_all_270_replication_conditions": true,
+    "accepted_objectives_never_decrease": true,
+    "800_shared_renaming_scores_and_40_schema_cases": true,
+    "macro_micro_pair_denominator_trace": {
+      "tp": 30063,
+      "fp": 3589,
+      "fn": 13088,
+      "true_pairs": 43151
+    },
+    "preserved_original_figure_assets_and_generator": 33,
+    "original_workspace_inputs_unchanged": 695
+  }
+}

@@ -1,0 +1,10 @@
+setting,status,training,calibration,gate_quantile,clock_correction,calibration_reference_pairs,gate_s,training_positive_pairs,training_pairs
+original_split,evaluated,"['2019-03-03', '2019-04-02', '2020-05-02']",2020-07-03,0.99,True,434.0,0.003025170001565151,257.0,18027.0
+first_two_train,evaluated,"['2019-03-03', '2019-04-02']",2020-07-03,0.99,True,434.0,1.003010170003763,1.0,4457.0
+latest_train_only,evaluated,['2020-05-02'],2020-07-03,0.99,True,434.0,0.003025170001565151,256.0,13570.0
+second_train_only,insufficient_training_classes,['2019-04-02'],2020-07-03,0.99,True,434.0,1.003010170003763,0.0,0.0
+early_calibration,insufficient_calibration_matches,['2019-03-03'],2019-04-02,,,,,,
+middle_calibration,evaluated,"['2019-03-03', '2019-04-02']",2020-05-02,0.99,True,256.0,2.0008868999984544,1.0,4457.0
+uncorrected_clocks,evaluated,"['2019-03-03', '2019-04-02', '2020-05-02']",2020-07-03,0.99,False,434.0,1.003010170003763,257.0,18066.0
+gate_quantile_095,evaluated,"['2019-03-03', '2019-04-02', '2020-05-02']",2020-07-03,0.95,True,434.0,0.001,257.0,18027.0
+gate_quantile_0999,evaluated,"['2019-03-03', '2019-04-02', '2020-05-02']",2020-07-03,0.999,True,434.0,3.307620509001805,257.0,18027.0

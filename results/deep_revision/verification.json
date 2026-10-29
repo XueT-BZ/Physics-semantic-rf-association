@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "retained_scientific_files_unchanged": 365,
+  "recomputed_partition_rows": 87290,
+  "maximum_metric_difference": 1.1102230246251565e-16,
+  "public_test_reports": 23677,
+  "public_partitions_match_retained_results": true,
+  "seconds": 10.075063699998282,
+  "scope": "All retained new partition labels checked against regenerated descriptor truth; old scientific evidence hashes verified."
+}

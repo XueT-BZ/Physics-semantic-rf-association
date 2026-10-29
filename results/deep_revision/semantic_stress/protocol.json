@@ -1,0 +1,183 @@
+{
+  "replications": 10,
+  "scenes_per_replication": 40,
+  "conditions": [
+    "nominal",
+    "same_class_collisions",
+    "dense_independent_classes",
+    "dense_same_class_collisions",
+    "imbalanced_classes",
+    "receiver_specific_classifiers",
+    "independent_errors_control",
+    "event_shared_errors"
+  ],
+  "scorer_names": [
+    "physics",
+    "joint",
+    "unweighted",
+    "boosted"
+  ],
+  "test_seed": "110000000 + 100000*r + j; r=0..9, j=0..39",
+  "class_vocabulary": 4,
+  "receivers": 4,
+  "hidden_events": 14,
+  "default_collision_probability": 0.25,
+  "dense_collision_probability": 0.65,
+  "nominal_class_prior": [
+    0.25,
+    0.25,
+    0.25,
+    0.25
+  ],
+  "imbalanced_class_prior": [
+    0.7,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "same_class_rule": "Copy the parent event class in event index order; independent clutter classes are retained.",
+  "classifier_matrices": [
+    [
+      [
+        0.88,
+        0.04,
+        0.04,
+        0.04
+      ],
+      [
+        0.04,
+        0.88,
+        0.04,
+        0.04
+      ],
+      [
+        0.04,
+        0.04,
+        0.88,
+        0.04
+      ],
+      [
+        0.04,
+        0.04,
+        0.04,
+        0.88
+      ]
+    ],
+    [
+      [
+        0.88,
+        0.12,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.88,
+        0.12,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.88,
+        0.12
+      ],
+      [
+        0.12,
+        0.0,
+        0.0,
+        0.88
+      ]
+    ],
+    [
+      [
+        0.88,
+        0.12,
+        0.0,
+        0.0
+      ],
+      [
+        0.12,
+        0.88,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.88,
+        0.12
+      ],
+      [
+        0.0,
+        0.0,
+        0.12,
+        0.88
+      ]
+    ],
+    [
+      [
+        0.88,
+        0.0,
+        0.0,
+        0.12
+      ],
+      [
+        0.12,
+        0.88,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.12,
+        0.88,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.12,
+        0.88
+      ]
+    ]
+  ],
+  "receiver_confidence_ranges": [
+    [
+      0.6,
+      0.95
+    ],
+    [
+      0.7,
+      0.98
+    ],
+    [
+      0.45,
+      0.8
+    ],
+    [
+      0.9,
+      0.99
+    ]
+  ],
+  "receiver_specific_confidence_depends_on_correctness": false,
+  "shared_error_probability": 0.12,
+  "shared_error_rule": "A single wrong flag and nonzero cyclic class offset are drawn per genuine event and shared by its receivers. Per-report confidence draws and missingness remain independent. Clutter uses independent report-level errors.",
+  "independent_error_control": "Same .12 error probability, uniform nonzero offset, confidence laws and missingness; error flags and offsets are drawn per report.",
+  "confidence_if_correct": [
+    0.6,
+    0.95
+  ],
+  "confidence_if_wrong": [
+    0.45,
+    0.9
+  ],
+  "missing_semantics_probability": 0.1,
+  "inference_maps": "All maps supplied correctly; this audit isolates evidence quality. Unknown maps are evaluated separately.",
+  "fits": "Frozen original linear parameters; original-hyperparameter boosted refits reconstructed from the original train/calibration splits and cached by deep_scoring.py.",
+  "new_test_fitting": false,
+  "output_metric": "Scene-macro event-pair F1; 95% t intervals over ten replication means",
+  "scope": "Descriptor-level stress test, not measured classifier or waveform validation",
+  "original_generator_sha256": "cdec8de8c350e454e9cf450eebc5195dc7f807ff45f40a5b9503696e9d611af4",
+  "script_sha256": "dcf0e56e3053bd9c43032e1f0970aaedc7ff8dcf16f32ccedb62f23857428840"
+}

@@ -1,0 +1,399 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}
+\usepackage{mathpazo,amsmath,amssymb,booktabs,tabularx,array,longtable,graphicx,enumitem}
+\usepackage[margin=2.05cm,headheight=13pt]{geometry}
+\usepackage{microtype,fancyhdr,lastpage,caption,placeins,hyperref}
+\ifdefined\pdfminorversion\pdfminorversion=7\fi
+\hypersetup{hidelinks,pdftitle={Supplementary Material: Physics--Semantic RF Event Association}}
+\linespread{1.10}\setlength{\parindent}{1.3em}\setlength{\parskip}{2pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thetable}{S\arabic{table}}\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\captionsetup{font=small,labelfont=bf,labelsep=period}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Physics--Semantic RF Alignment: Supplementary Material}
+\fancyhead[R]{\small\thepage\ of \pageref*{LastPage}}
+\fancyfoot[L]{\small Controlled descriptors and public-recording evaluation.}
+\newcommand{\ind}{\mathbf{1}}\newcommand{\R}{\mathbb R}
+\begin{document}
+\begin{center}
+{\Large\bfseries Supplementary Material}\par\vspace{5pt}
+{\large Physics--Semantic Consistency-Constrained Association of Heterogeneous RF Observations for Multi-Receiver Communication Signal Monitoring}
+\end{center}
+\noindent This supplement gives implementation details and additional diagnostics for the main manuscript. The executable specification is \texttt{code/experiment.py}. Controlled results use the supplied generated descriptors. Section S7 describes the executed public-recording benchmark and the limits of its packet reference.
+
+\section{Complete nominal generator and observable schema}
+\subsection{Generation order and distributions}
+Each scene uses \texttt{numpy.random.default\_rng(scene\_seed)}. The receiver ring has radius 2000 m and a scene-wide rotation drawn uniformly from $[0,2\pi)$. For zero-based receiver $s$, the angle is $2\pi s/S$ plus that rotation. Independent scene-shared clock and oscillator residuals are drawn before event parameters, with standard deviations $0.8\,\mu$s and 250 Hz, respectively.
+
+For each of $E=14$ events, emission time is uniform in $[0,120\,\mu\mathrm{s}]$ and carrier is $100\,\mathrm{MHz}+1800m$ Hz plus Gaussian deviation of standard deviation 180 Hz, where $m$ is uniform over $\{0,\ldots,5\}$. Event bandwidth is uniform in $[20,60]$ kHz, duration in $[20,80]\,\mu$s, location in $[-1500,1500]^2$ m, and protocol over four classes. Generation then visits events $e=1,\ldots,E-1$. With probability 0.25, it selects an earlier event uniformly and copies its time, carrier, bandwidth, and duration, adding independent Gaussian perturbations of standard deviations $1.5\,\mu$s, 150 Hz, 2 kHz, and $2\,\mu$s. Copied bandwidth and duration are floored at 1 kHz and $1\,\mu$s. Location and protocol are not copied. Earlier events may themselves be copies; resulting emission times are not clipped back to the initial window.
+
+\paragraph{Interpretation of the parameters.}
+The 14 events are 14 transmission instances, indexed 0--13, rather than 14 classes or receiver reports. The four class labels are anonymous $Q_1$--$Q_4$ and have no assigned protocol names. The 1800 Hz value is carrier-center spacing; 20--60 kHz is the initial bandwidth range. Their overlap is intentional and does not establish that a real detector can resolve the transmissions. The 180 Hz standard deviation describes the event carrier perturbation before collision overrides, not a Gaussian signal spectrum, receiver noise power, or bandwidth. An event's common carrier cancels in a same-event frequency difference; the receiver residuals and measurement errors do not. The collision override can move bandwidth outside its initial range. A generated start time is not an observation-window truncation rule for the whole burst.
+
+\texttt{results/event\_ledger\_r00\_test000.csv} gives all 14 event instances for seed 1020000, including their final parameters, anonymous classes, collision parents, detected receivers, and report counts. Its 43 genuine reports and two clutter reports reproduce the delivered first test scene. \texttt{code/audit\_event\_definitions.py} checks that reproduction without modifying or refitting the original experiment.
+
+Receivers are visited in index order. Each detects an event with probability 0.8, and independently produces a Poisson number of clutter reports with mean 0.8. Clutter draws its own time, channel, bandwidth, duration, and protocol from the corresponding basic ranges, uses zero propagation delay, and receives a unique singleton truth label. Non-clutter propagation delay is distance divided by $c=299{,}792{,}458$ m/s. Both report types include the receiver's shared residual and independently drawn detector noise.
+
+Receiver $s\in\{0,\ldots,S-1\}$ has timing, carrier, bandwidth, and duration measurement standard deviations $(0.6+0.4s)\,\mu$s, $(120+80s)$ Hz, $(1500+300s)$ Hz, and $(1+0.3s)\,\mu$s. Timing noise is nominally Gaussian. The same receiver's residual bias is reused for its reports; it is not resampled for each pair. Observed bandwidth and duration are floored at 1 Hz and $10^{-9}$ s. These small positivity floors apply to the generated descriptors and are distinct from the collision-parameter floors above.
+
+Missing semantics are selected with probability 0.10 and wrong labels with probability 0.12. A wrong label is obtained by adding a uniformly selected nonzero class offset modulo four. Confidence is uniform on $[0.45,0.90]$ when wrong and $[0.60,0.95]$ otherwise; the remaining probability is equally split among the other classes. Missingness replaces the whole vector by $(1/4,1/4,1/4,1/4)$. Native column $a$ at receiver $s$ denotes canonical class $(a+s)\bmod4$ in zero-based code indexing. Frequency unit is independently selected from Hz, kHz, and MHz. Finally, all observations and their evaluation labels are shuffled by the same permutation. The executable preserves this exact random-number draw order.
+
+\subsection{Saved data and inference boundary}
+The nominal data are stored in thirty compressed CSV files, covering ten replications and three splits. Each row represents one report. Table~\ref{tab:schema} separates admissible inference inputs from administrative and evaluation columns. True source positions are absent from the observation tables; receiver positions are available as sensor metadata.
+\begin{table}[!htb]\caption{Observation CSV schema, grouped by purpose.}\label{tab:schema}
+\small\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}p{5.7cm}Y@{}}\toprule
+Field or group & Meaning and use \\\midrule
+\texttt{receiver}, \texttt{receiver\_x\_m}, \texttt{receiver\_y\_m} & Receiver identity and known planar position; inference input. \\
+\texttt{time\_s}, \texttt{frequency\_value}, \texttt{frequency\_unit} & Time and native carrier encoding. Unit code 0/1/2 means Hz/kHz/MHz. \\
+\texttt{bandwidth\_hz}, \texttt{duration\_s} & Positive observed bandwidth and duration. \\
+\texttt{sigma\_time\_s}, \texttt{sigma\_frequency\_hz}, \texttt{sigma\_bandwidth\_hz}, \texttt{sigma\_duration\_s} & Declared per-observation measurement standard deviations. \\
+\texttt{declared\_clock\_s}, \texttt{declared\_freq\_bias\_hz} & Declared scene-shared receiver residual standard deviations. They are not realized bias corrections. \\
+\texttt{native\_semantic\_0} through \texttt{native\_semantic\_3} & Native probability vector, requiring the known receiver permutation. \\
+\texttt{truth\_event}, \texttt{is\_clutter} & Generation/evaluation labels; never used to construct features or gates. \\
+\texttt{replicate}, \texttt{split}, \texttt{scene}, \texttt{scene\_seed} & Audit and data-selection metadata; never scorer inputs. \\\bottomrule
+\end{tabularx}\end{table}
+
+\section{Stress overrides, scorer settings, and split schedule}
+\subsection{Controlled shifts}
+All stress conditions change the generator while freezing nominally fitted scalers, model parameters, temperatures, and gate multiplier $k=3.5$. Table~\ref{tab:overrides} specifies the twelve named scenarios. A matched uncertainty declaration is changed only where explicitly stated; physical measurement-noise standard deviations retain their nominal formulas.
+\begin{table}[!htb]\caption{Exact overrides for named stress conditions. Unlisted settings retain their nominal values.}\label{tab:overrides}
+\small\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}p{4.4cm}Y@{}}\toprule
+Condition & Override \\\midrule
+Nominal stress reference & No override; separate stress scene seeds. \\
+Dense events & $E=28$. \\
+Missed detections & Per-event, per-receiver detection probability 0.55. \\
+Clutter & Poisson clutter mean 2.5 per receiver. \\
+Semantic error & Wrong-class probability 0.45. \\
+Missing semantics & Uniform-vector probability 0.65. \\
+Clock misspecification & Actual shared clock s.d. $6\,\mu$s; declaration remains $0.8\,\mu$s. \\
+Oscillator misspecification & Actual shared frequency-bias s.d. 1.5 kHz; declaration remains 0.25 kHz. \\
+Positive delays & Independently, 20\% of reports add an exponential timing delay with mean $8\,\mu$s. This is a descriptor contamination, not multipath waveform simulation. \\
+Heavy-tailed timing & Replace standard Gaussian timing jitter by $t_3/\sqrt3$, preserving finite variance. \\
+Unseen receiver count & $S=5$; use the same ring construction, error formulas, and known native-class permutation. \\
+Confidently wrong receiver & At $s=S-1$, force class $(q+1)\bmod4$ with confidence 0.99 and no missing semantic vector. \\\bottomrule
+\end{tabularx}\end{table}
+
+The semantic sweep uses wrong-label probabilities $0,0.1,0.25,0.4,0.6,0.75$. The clock sweep uses actual standard deviations $0,0.8,2,5,10,20\,\mu$s, each with either fixed declaration $0.8\,\mu$s or a matched declaration. The scaling sweep uses event counts 8, 16, 32, and 64. Together these make $12+6+12+4=34$ settings. Each uses 20 scenes per replication, with seed $10^6+10^5r+30{,}000+k$. Reusing this schedule couples draws across settings where their control flows allow it; these settings are not statistically independent datasets.
+
+The gate-width sweep uses $k\in\{1,2,3,3.5,5\}$ and the first 20 nominal test scenes of each replication. The small exact audit uses six additional seeds per replication, $10^6+10^5r+50{,}000+k$, with $E=4$, clutter mean 0.3, collision probability 0.5, and initial time window $35\,\mu$s. It yields 60 instances of 11--19 observations. All nominal, stress, and exact seed families are disjoint, except for the deliberate reuse of the same stress seeds across interventions.
+
+\subsection{Feature selection, fitting, and decoding variants}
+The physical feature order is absolute normalized timing difference, excess normalized timing difference, normalized carrier difference, normalized bandwidth difference, and normalized duration difference, each transformed by $\log(1+x)$. Weighted semantic compatibility is feature six. Timing-only fitting selects features 1--2, carrier-only selects feature 3, semantics-only selects feature 6, and physical-only selects features 1--5. Joint, raw-frequency, and unweighted variants use six features, with only the stated input changed.
+
+Linear variants use \texttt{StandardScaler} followed by \texttt{LogisticRegression(C=1,max\_iter=500)} with the library's default unbalanced binary log loss, unpenalized intercept, and L-BFGS solver. Means and population standard deviations are fitted on all cross-receiver training pairs. The histogram-gradient-boosted comparator uses 100 iterations, 15 maximum leaf nodes, learning rate 0.08, $L_2$ regularization 1, random state 123, and disabled early stopping. It consumes unstandardized features; its logit is computed from clipped predicted probabilities. No hyperparameter search uses test data.
+
+Every scorer fits a scalar temperature by bounded minimization in $\log T\in[\log0.1,\log10]$, using admitted calibration pairs and numerical tolerance $10^{-7}$. Only named calibrated variants apply it. The decoder uses pre-gate probabilities clipped to $[10^{-12},1-10^{-12}]$ before obtaining signed weights. The gate determines feasibility independently of this clipping. Dense gain arrays are scanned in deterministic index order and merged only above $10^{-10}$.
+
+The assignment baseline forms an optional bipartite assignment for each unordered receiver pair. Dummy columns have zero gain, gate-rejected entries have numerical gain $-10^6$, and only real assignments with positive gain are united. Local one-to-one assignments may still conflict after union. The no-receiver-exclusivity ablation gives same-receiver edges neutral, unscored weights. The no-complete-gate ablation omits all-pair gate feasibility but keeps receiver exclusivity. Other objective components are unchanged in both ablations.
+
+\section{Metric definitions and statistical denominators}
+\subsection{Pair metrics and reliability bins}
+For $n$ cross-receiver pairs, let $y_a\in\{0,1\}$ and $p_a\in[0,1]$ denote truth and reported probability. The reported probability includes gate-forced zeros. With $\epsilon=10^{-12}$ and $\widetilde p_a=\min(1-\epsilon,\max(\epsilon,p_a))$,
+\begin{align}
+ \operatorname{Brier}&=n^{-1}\sum_{a=1}^{n}(p_a-y_a)^2,\\
+ \operatorname{NLL}&=-n^{-1}\sum_{a=1}^{n}\big[y_a\log\widetilde p_a+(1-y_a)\log(1-\widetilde p_a)\big].
+\end{align}
+AUROC and non-interpolated AP are computed by scikit-learn on the same set. ECE divides $[0,1]$ into ten equal-width bins, including $p=1$ in the last bin, and evaluates
+\begin{equation}
+ \operatorname{ECE}=\sum_{b:|B_b|>0}\frac{|B_b|}{n}
+ \left|\frac{1}{|B_b|}\sum_{a\in B_b}p_a-
+ \frac{1}{|B_b|}\sum_{a\in B_b}y_a\right|.
+\end{equation}
+Saved pair tables include both all-pair ECE and ECE conditioned on admission. Empty bins contribute nothing. Rejection produces many exact zero scores, so an all-pair summary can hide confidence errors among the admitted candidates.
+
+\subsection{Complete-partition metrics}
+Let $C(i)$ and $G(i)$ denote the predicted and true clusters containing observation $i$. All unordered observation pairs, including same-receiver pairs, are used for event-pair precision, recall, and F1. Precision or recall with a zero denominator is set to zero; F1 is set to one when both truth and prediction contain no positive pair. These conventions keep empty-positive scenes in the evaluation.
+
+The $B^3$ measures are
+\begin{equation}
+ P_{B^3}=\frac1N\sum_i\frac{|C(i)\cap G(i)|}{|C(i)|},\qquad
+ R_{B^3}=\frac1N\sum_i\frac{|C(i)\cap G(i)|}{|G(i)|},\qquad
+ F_{B^3}=\frac{2P_{B^3}R_{B^3}}{P_{B^3}+R_{B^3}}.
+\end{equation}
+For contingency counts $n_{uv}=|C_u\cap G_v|$, row totals $n_{u\cdot}$, column totals $n_{\cdot v}$, and $M=\binom N2$, ARI uses
+\begin{equation}
+ \operatorname{ARI}=\frac{A-BC/M}{(B+C)/2-BC/M},\quad
+ A=\sum_{u,v}\binom{n_{uv}}2,\quad B=\sum_u\binom{n_{u\cdot}}2,\quad C=\sum_v\binom{n_{\cdot v}}2.
+\end{equation}
+Degenerate partitions follow scikit-learn's convention. Exact visible-event recovery averages the indicator that each true cluster of size at least two appears unchanged in the predicted partition. It equals one if no such true cluster exists. Completely unobserved events and true singletons are not in its denominator.
+
+Receiver-violation rate is the fraction of predicted non-singleton clusters containing repeated receiver IDs; it is zero if there are no predicted non-singletons. Gate-violation rate is the number of predicted within-cluster, cross-receiver edges that fail the nominal $k=3.5$ gate, divided by all predicted within-cluster cross-receiver edges, or zero for an empty denominator. Clutter attachment is the fraction of clutter observations placed in non-singleton clusters, or zero when no clutter exists. The gate sweep reports only its own gate recall, retained fraction, and F1, avoiding reuse of the nominal gate-violation definition at a different $k$.
+
+\subsection{Aggregation and uncertainty}
+Pair metrics pool scenes within each replication. Partition and runtime metrics first average scenes within a replication. For $R=10$ replication estimates $x_r$, the reported interval is $\bar x\pm t_{0.975,9}s/\sqrt{10}$, with $s^2=\sum_r(x_r-\bar x)^2/(R-1)$. A method difference is formed within replication before applying the same calculation. Reused test scenes permit paired comparisons but do not make the millions of pair entries independent trials. The intervals describe repeated simulation and fitting under this generator; they do not account for simulator misspecification. No familywise multiple-comparison correction is claimed.
+
+\section{Additional diagnostic results and optimization checks}
+\begin{figure}[!htb]\centering
+\begin{minipage}[t]{.49\linewidth}\centering
+\includegraphics[width=\linewidth]{figures/supp_risk_coverage.pdf}
+\caption{Selective admitted-pair risk on held-out replication 0.}
+\label{fig:risk}
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}\centering
+\includegraphics[width=\linewidth]{figures/supp_exact_gap.pdf}
+\caption{Greedy objective loss on the 60 exact-audit instances.}
+\label{fig:gap}
+\end{minipage}
+\end{figure}
+
+Figure~\ref{fig:risk} ranks admitted pairs by confidence $\max(p,1-p)$, with stable tie sorting. At each retained fraction it reports the cumulative error of binary decisions at $p\geq0.5$. Coverage is relative to admitted pairs only. This diagnostic does not produce a partial event partition or prove that independently retaining confident pairs preserves global feasibility. Curve points are drawn directly from the stored prediction files, and the exact points are exported as CSV.
+
+Figure~\ref{fig:gap} uses relative objective gap $(J^*-J_g)/\max(|J^*|,10^{-9})$. Forty-seven of 60 cases match the optimum to numerical tolerance $10^{-8}$; the mean gap is 1.71\% and the maximum is 16.82\%. A mixed-integer result is accepted only if SciPy/HiGHS reports success with requested relative gap zero. A 20-second solver limit is imposed per case, and an unproven incumbent raises an error rather than entering the results as exact.
+
+The separate four-node construction has positive edges $w_{12}=5$ and $w_{13}=w_{24}=4$, with $w_{14}=w_{23}=w_{34}=-10$. All receivers are distinct and all gates admit. After merging $\{1,2\}$, gains to nodes 3 and 4 are both $-6$, and edge 3--4 is negative. Greedy inference stops at score 5, while partition $\{1,3\},\{2,4\}$ has score 8. This example demonstrates an irreversible early merge, independently of the RF generator and trained scorer.
+
+\begin{figure}[!htb]\centering
+\includegraphics[width=\linewidth]{figures/fig03_contract.pdf}
+\caption{Canonical observation interface. (a) Known unit scales recover the same frequency without estimating the receiver's residual bias. (b) A known permutation maps the native order of $R_1$ to the common class order; values are preserved. (c) Inference uses observable record fields. The lower branch distinguishes scene-shared receiver residuals from independent measurement errors, and separates evaluation-only labels from the feature path.}\label{fig:contract}\end{figure}
+
+\begin{figure}[!htb]\centering
+\includegraphics[width=\linewidth]{figures/fig05_evidence.pdf}
+\caption{Feature-level decomposition. The physical branch applies $\log(1+\cdot)$ to five uncertainty-normalized residuals. Both canonical protocol distributions feed the dot-product agreement and their respective entropy calculations. The plotted distributions are illustrative vectors $(.7,.1,.1,.1)$ and $(.6,.2,.1,.1)$, not classifier measurements. A uniform distribution contributes zero weighted semantic evidence. The six-dimensional concatenation is standardized using training scenes only.}\label{fig:evidence}\end{figure}
+
+\begin{figure}[!htb]\centering
+\includegraphics[width=\linewidth]{figures/fig06_temperature.pdf}
+\caption{Calibration versus partition decisions. (a) Illustrative sigmoid curves show a confidence change without moving the $0.5$ crossing. (b) Dividing all finite unsaturated logits by a common positive $T$ rescales every signed merge gain by the same factor. Fixed-gate, exact-arithmetic ordering is preserved. The fitted temperatures and empirical probability quality are evaluated separately; this diagram is not a claimed calibration result.}\label{fig:temperature}\end{figure}
+
+\begin{table}[!htb]\caption{Additional controlled partition metrics. Exact denotes full recovery of a visible event; Rx and Gate use the denominators defined in Section S3.}\small\input{tables/cluster}\end{table}
+\FloatBarrier
+
+\section{Notation and implementation correspondence}
+\small\renewcommand{\arraystretch}{1.10}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{10.5cm}@{}}
+\caption{Mathematical notation used in the main manuscript and supplement.}\label{tab:notation}\\
+\toprule Symbol & Unit or type & Definition \\\midrule\endfirsthead
+\toprule Symbol & Unit or type & Definition (continued) \\\midrule\endhead
+\bottomrule\endfoot
+$S,s,s_i$ & Counts/indices & Number of receivers; zero-based receiver index; receiver of report $i$. \\
+$E,e$ & Counts/indices & Generated event count and hidden event index. $E$ is not supplied to inference. \\
+$N,i,j,\nu$ & Counts/indices & Number of reported observations and observation indices. \\
+$K,q,q_e$ & Counts/indices & Number of protocol classes, class index, hidden event class. Math uses classes $1,\ldots,K$; code uses $0,\ldots,K-1$. \\
+$\mathbf r_s,\mathbf x_e$ & m, vectors & Known receiver position and hidden event position. \\
+$c$ & m/s & Assumed propagation speed, 299,792,458. \\
+$\tau_e,t_i$ & s & Hidden emission time and observed arrival time. \\
+$f_e,f_i$ & Hz & Hidden event carrier and canonicalized observed carrier. \\
+$B_e,B_i$ & Hz & Hidden event bandwidth and observed bandwidth. \\
+$D_e,D_i$ & s & Hidden event duration and observed duration. \\
+$b_s,d_s$ & s; Hz & Residual receiver clock and oscillator offsets, shared within a scene. The bold vector $\mathbf d$ collects oscillator offsets; path-length labels $d_i$ in the gate diagram are instead distances in metres. \\
+$\epsilon_i^t,\epsilon_i^f,\epsilon_i^B,\epsilon_i^D$ & Corresponding units & Independent measurement errors before positivity clipping of bandwidth and duration. \\
+$m_i$ & s & Additional nonnegative timing contamination; zero nominally. \\
+$\sigma_i^t,\sigma_i^f,\sigma_i^B,\sigma_i^D$ & Corresponding units & Declared measurement-error standard deviations. \\
+$\Sigma_b,\Sigma_d$ & s$^2$; Hz$^2$ & Declared receiver-residual covariance matrices; off-diagonal values are zero nominally; the review audit also tests matched correlated clock declarations. \\
+$u_{t,ij},u_{f,ij},u_{B,ij},u_{D,ij}$ & s; Hz; Hz; s & Positive declared standard deviations of pair measurement differences. \\
+$v_i,u_i,\alpha(u_i)$ & Native value/unit/scale & Native carrier number, native unit, and conversion to hertz. $u_i$ is a unit label, not the pair standard deviation $u_{t,ij}$. \\
+$\pi_i,\pi_{iq}$ & Probability vector & Canonical protocol belief and its class-$q$ entry. \\
+$\Delta t_{ij},\Delta f_{ij},\Delta B_{ij},\Delta D_{ij}$ & Corresponding units & Signed differences of corresponding observed values. \\
+$h_{ij}$ & s & Receiver separation divided by propagation speed. \\
+$z_{t,ij},z_{f,ij},k$ & Dimensionless & Excess timing residual, carrier residual, and gate multiplier. \\
+$g_{ij},\ind[\cdot]$ & Binary & Gate admission and indicator function. \\
+$y_{ij},\Phi$ & Binary; function & True same-event indicator and standard-normal cumulative distribution function. \\
+$\phi^{\rm phys},\phi^{\rm sem},\phi,\widetilde\phi$ & Feature vectors/scalar & Five physical features, weighted semantic scalar, six-dimensional concatenation, and standardized feature vector. \\
+$v_{ij},H(\pi_i),r_i$ & Dimensionless & Log compatibility, Shannon entropy in natural units, and normalized concentration. Concentration is not correctness. \\
+$\epsilon$ & Dimensionless & Numerical probability floor $10^{-12}$, distinct from measurement-error symbols with indices/superscripts. \\
+$\mu,\sigma$ & Feature vectors & Training-set means and scales for componentwise standardization; not the measurement-error standard deviations. \\
+$\beta_0,\beta,\ell_{ij}$ & Dimensionless & Fitted linear intercept, coefficient vector, and pair logit. \\
+$C_{\rm reg}$ & Positive scalar & Inverse regularization setting; equal to one. \\
+$\mathcal T,\mathcal V_g$ & Pair sets & All cross-receiver training pairs and admitted calibration pairs. \\
+$T,T^*$ & Positive scalar & Temperature and its calibration optimum. \\
+$p^{\rm cal}_{ij},\widehat p_{ij}$ & Probability or score & Pre-gate calibrated probability and final gate-masked score. \\
+$w_{ij},W,G$ & Weights/matrices & Signed pre-gate pair weight, dense symmetric weight matrix, and dense gate mask. \\
+$\mathcal C,C,A,B,M$ & Sets/count & Predicted partition, event cluster/current clusters, and unknown number of predicted clusters. Cluster $B$ is distinct from bandwidth $B_i$. \\
+$a_{ij},\mathcal S(A)$ & Binary/set & Predicted co-membership and receiver IDs represented in cluster $A$. \\
+$J,J_g,J^*$ & Dimensionless & Partition objective, greedy objective, and proven small-instance optimal objective. \\
+$F(A,B),\Delta(A,B)$ & Binary; weight sum & Feasible-merge indicator and sum of all signed cross-cluster weights. \\
+$\mathrm{TP},\mathrm{FP},\mathrm{FN}$ & Pair counts & Correct, false, and missed predicted co-memberships. \\
+$C(i),G(i)$ & Observation sets & Predicted and true cluster of observation $i$ in metric definitions. \\
+$R,r,\bar x,s_x$ & Count, index, or statistic & Number of independent replications, replication index, mean estimate, and sample standard deviation across replications. \\
+\end{longtable}
+\normalsize
+
+\section{Reproduction, audits, and evidence limits}
+From the project directory, install the pinned packages and run \texttt{python code/reproduce.py}. The wrapper regenerates ten complete replications, aggregates results, redraws diagrams and statistical figures, compiles both documents, and runs numerical and document checks. A LaTeX installation with \texttt{pdflatex} and TikZ is required for compilation; descriptor experiments require only Python packages and no GPU. To inspect the delivered outputs without refitting, run \texttt{python code/verify\_results.py} and the invariant/diagram tests described in the README.
+
+The audit regenerates all 2400 nominal scenes and checks the raw CSVs against their seeds. It also verifies train/calibration/test seed separation, 12 pair variants and eight partition variants; recomputes summaries and first-replication linear predictions; and checks that constrained decoders have zero violations. Separate invariant tests cover unit conversion, canonical class renaming, neutral missing semantics, exclusion of truth labels from features, rigid receiver-geometry transformations, temperature invariance in unsaturated tests, and the four-node counterexample. Diagram examples undergo numerical checks as well as layout inspection.
+
+Runtime curves use physical/joint stress-decoder timings. The stored nominal runtime of the unweighted ablation includes its score call inside the timed wrapper and should not be treated as a decoder-only comparison; it is not plotted as one. Absolute timings depend on CPU load and library versions. Full reruns should reproduce scientific metrics within floating-point tolerance, but need not reproduce wall-clock times or byte-identical compressed archives.
+
+The nominal benchmark evaluates controlled descriptors. RF waveform extraction, calibration of measured semantic posteriors, covariance estimation, unknown Doppler, and temporal transmitter tracking remain outside its validation scope. Sections S11--S14 examine map completion, correlation, fragmentation, and optimization under controlled conditions. The fifth-receiver test covers only the receiver family specified by the generator. Field validation requires synchronized ground-truth events, measured errors and correlations, known and unknown vocabulary controls, realistic false detections, and evaluation on disjoint receiver, day, and channel splits.
+\section{Executed public LoED protocol and additional records}
+\subsection{Input provenance, exclusions, and reference interpretation}
+The data come from the publisher's six-file LoED sample, DOI \url{https://doi.org/10.5281/zenodo.4121430}, released under CC BY 4.0. The publisher MD5 is \texttt{7370baddc9b546354c26a71cd38981bc}; the download manifest identifies the original ZIP and metadata. The source paper is DOI \url{https://doi.org/10.1145/3419016.3431491}. This benchmark uses measured reception records. We add no simulated noise, protocol posteriors, receiver positions, or uncertainty declarations.
+
+The full physical-payload bytes are base64-decoded, checked for a minimum header length and unconfirmed-uplink message type, and hashed for reference construction. CRC-invalid records are removed. Exact duplicate rows are removed before excluding every payload group with a repeated gateway or a span greater than 5 s. This conservative rule avoids choosing among repeated reports using reference knowledge. Four observations with identities shared across different splits are removed. The per-file inclusion ledger accounts for raw, CRC-valid, type-valid, duplicate, ambiguous, cross-split, and eligible rows. The large exclusion rate in the 2019 training captures selects a restricted reference population, not all over-the-air emissions.
+
+\begin{table}[!htb]\caption{Public-recording inclusion by capture file. Ambiguous rows belong to repeated-gateway or long-span payload groups. Cross-split payload exclusions are applied afterward.}\small\input{tables/loed_files}\end{table}
+
+Identical retained payloads define a logical reference packet under these rules. Different physical retransmissions could still produce the same decoded bytes while being missed by complementary gateways. Thus the reference is not an independently instrumented physical-burst annotation. The 5 s eligibility rule uses identity-group timing but is not the association gate; the latter is fitted solely on calibration data. Identity fields, addresses, counters, ports, and row indices are excluded from all pair features.
+
+\subsection{Fitting and measured-input adaptation}
+The three earliest files are training data, 3 July 2020 is calibration, and 3 August and 2 September 2020 are test. No observation pairs are formed before this split. Receiver offsets use only training reference matches: pair medians with at least ten examples define equations $b_s-b_r=\operatorname{median}(t_s-t_r)$, weighted by the square root of their count. A minimum-norm least-squares solution fixes unsupported receivers at zero. The supported gateway pair has 256 training matches, a median difference of 0.999985 s, and corrections $+0.4999925$ and $-0.4999925$ s. These are supervised training corrections, not test-derived synchronization.
+
+Calibration reference residuals give the tolerance $G=\max(1\,\mathrm{ms},Q_{0.99})=3.02517$ ms. The three measured features are the log-normalized corrected time difference, reported-frequency mismatch, and decoded-spreading-factor mismatch. A timing-only model uses the first; a metadata model uses all three. Feature scalers and regularized logistic coefficients use training pairs only. Temperatures are fitted on admitted calibration pairs. The metadata temperature is approximately 0.10844; the timing temperature lies near the allowed lower bound 0.1. No partition gain is attributed to this common rescaling.
+
+The generic decoder is reused with the empirical time gate, not the Gaussian geometry gate. The adapter disables absent gate modalities; it does not provide invented receiver positions or RF measurements. Bandwidth metadata is retained for provenance but is not a fitted-uncertainty feature. RSSI and SNR differences are omitted because equal values are not expected at different receivers. All parameters and the uninformative role of protocol-class evidence are frozen before test.
+
+\subsection{Complete-capture evaluation and reproduction}
+Fixed 60 s windows use corrected observation times. No reference identity is used to keep matching packets in one window. Predicted cluster labels are made unique across windows, and TP, FP, and FN are counted over each complete capture, including same-receiver false positives and matching references split by boundaries. Complete-reference recovery requires that all reports of a visible reference are recovered without additions. Receiver violations count invalid non-singleton clusters; gate violations count inadmissible cross-receiver edges inside predicted clusters.
+
+Run \texttt{python code/fetch\_loed.py} and \texttt{python code/loed\_benchmark.py}. The first utility verifies publisher checksums and records provenance; the second reads the verified archive and produces inclusion ledgers, separate observations and references, fixed parameters, predictions, and per-capture/pooled metrics in \texttt{results/loed/}. \texttt{python code/scorer\_decoder\_factorial.py} independently runs the four-scorer, three-decoder comparison on the existing controlled scenes and verifies its constrained results against the released original experiment. No new controlled scenes are introduced for that comparison.
+
+Only two gateways remain in the eligible LoED test data, and the two held-out capture files do not support a deployment-population confidence interval. The real result is a reproducible packet-reference check, not validation of the full six-feature RF uncertainty model or a multi-protocol recognizer. The separate measurement and controlled outcomes should not be averaged into a single score.
+
+\section{Representation and class-semantic alignment audit}
+The workflow aligns heterogeneous RF observations and produces instance correspondences. This audit uses supplied source-specific field and class mappings. \texttt{code/semantic\_alignment\_audit.py} reuses all 800 original nominal test scenes, frozen joint-linear parameters, and the constrained decoder to compare mapped vectors, uncorrected native column order, and uniform class evidence. Physical features and the gate remain fixed. The intervention changes inputs at test time and is therefore different from training a physical-only model.
+
+For each scene the audit also changes frequency units and reorders the canonical probabilities by independently drawn receiver-specific permutations. The matching registry inverts those re-encodings before the original feature interface is used. The recovered common vectors and physical features are checked against the originals; deterministic partitions agree in all 800 scenes. No event labels enter the representation adapter. This validates handling of known representations, rather than discovery of unknown meanings.
+
+The saved outputs include 2400 scene-condition metric rows, replication summaries for each condition, paired F1 differences, and per-observation predicted labels before and after matched re-encoding. They are retained in \texttt{results/semantic\_alignment/}. The mapping registry has exactly four shared classes and bijective correspondences. Semantic hierarchy, open-set classes, schema discovery, and real waveform-classifier probability calibration are not established by these results. The independent verifier recomputes event-pair metrics from saved labels and original scene references.
+\section{Optional incomplete-registry probe}\label{supp:partial_probe}
+\subsection{Preserved baseline and small inference wrapper}
+The optional module is implemented in \texttt{code/partial\_mapping\_extension.py}. It retains the original generator, entropy-weighted compatibility, scaler, coefficients, temperatures, physical gate and constrained decoder. Its inputs are observable receiver IDs, native probability vectors or decoded-category indicators, physical pair features and gate residuals. Event references, hidden category maps, payload hashes, and source coordinates are kept separately for benchmark construction and evaluation. Existing figures and tables report baseline results; they are not relabeled as evidence of map learning.
+
+The target source has $F$ unanchored native entries. Candidate maps enumerate the $F!$ unused common-class assignments after anchored rows/values are removed. Given provisional groups, each candidate is scored with the original entropy-weighted log feature and frozen model. In particular, no Hungarian update for a bilinear surrogate is substituted. A physical-only initialization avoids using arbitrary native column indices as common meanings. The sequential map estimate is a complete enumeration for the fixed initial groups. Feedback compares a fresh greedy partition with the preceding feasible partition under the current map, retaining the better one, then enumerates maps again. Strict gains exceed $10^{-10}$; ties retain the preceding state and the cap is ten sweeps. Feasibility is inherited from the original decoder. Adaptation objective ascent is not a semantic-correctness or global-optimality guarantee.
+
+\subsection{Controlled reuse and masked entries}
+For repetition $r$, scene seeds remain $R_r=10^6+10^5r$, calibration/adaptation $R_r+10{,}000+j$ ($j=0,\ldots,39$), and test $R_r+20{,}000+j$ ($j=0,\ldots,79$). The adapter first reverses the generator's declared cyclic encoding, then re-encodes receiver 1 with a permutation drawn using seed $9{,}100{,}000+r$, stable across adaptation and test. Other maps are known. The correspondence to common class 0 is disclosed; its native index depends on the hidden codebook. The remaining three entries are evaluated, for 30 withheld entries across ten repetitions. No reference instance labels are passed to the mapping module.
+
+The adaptation descriptors come from calibration scenes whose labels were already used in the historical scalar-temperature fit. Their reuse does not create a new independent calibration/adaptation collection. All fitted parameters remain frozen. Map selection uses only the re-encoded descriptors and provisional groups, and test references never select updates. The public probe uses a later adaptation capture. Both probes are exploratory analyses of previously inspected data.
+
+Mapping accuracy counts only withheld entries, excluding the anchor and all known receivers. Controlled F1 averages the 80 scene scores in each repetition before averaging the ten repetition means. The known-map adapter reproduces all 800 original scene F1 values. Five- and 40-scene adaptation recover all three withheld entries in every repetition, while one-scene adaptation recovers 26/30. Sequential and feedback test results tie. The supplied predictions, maps, traces and summaries also include the five-scene condition omitted from the compact main table.
+
+\subsection{Public code hiding and independent later-capture evaluation}
+The original six-file LoED filtering, clock corrections, empirical gate, timing scorer and three-feature metadata scorer are retained. The two active original receiver IDs are 0 and 3; local IDs 0 and 1 only simplify the wrapper. The 3 August 2020 capture supplies 15,254 adaptation reports, while 2 September supplies 8423 test reports. Their reference identities do not overlap. At local receiver 1, native SF7/SF12 column meanings are exchanged and withheld, while SF8--SF11 correspondences are fixed. The reference source retains its known SF7--SF12 vocabulary. There are only two candidate maps. Decoded SFs are categorical metadata, not noisy protocol-recognition posteriors; measured time and frequency values are not perturbed.
+
+Initialization uses the original timing-only model. Map candidates and subsequent association use the original metadata model, whose third feature is SF mismatch. Physical features contain only corrected-time residual and reported-frequency mismatch. Payload references are isolated from mapping and decoding. Both withheld entries are recovered. On the later test capture, the learned map yields TP 511, FP 1 and FN 3, exactly matching the complete-map reference. Under unresolved order the counts are TP 35, FP 2 and FN 479. Both methods return feasible partitions. This two-entry correction establishes a limited measured-input mechanism; it cannot establish unknown protocol semantics, recovery of a completely hidden six-class map, or a general benefit over sequential alignment.
+
+Run \texttt{python code/partial\_mapping\_extension.py} and then the accompanying verification script. Results are under \texttt{results/partial\_mapping\_extension/}. Separate mapping and event metrics, objective traces and observation-level predictions make it possible to distinguish missing-registry recovery from a change in the original classifier or decoder.
+
+
+
+
+\section{Proofs of the main propositions}
+\subsection{Conditional physical coverage}
+The propagation part of $\Delta t_{ij}$ has magnitude at most $h_{ij}$, so failure of the time gate requires timing-error magnitude above $ku_{t,ij}$, with probability at most $2\Phi(-k)$. A true pair's frequency difference has zero mean and standard deviation $u_{f,ij}$, giving the same tail probability. A union bound gives the main-text bound without requiring independence between the two tests.
+\subsection{Temperature invariance}
+Sigmoid is strictly increasing, so positive rescaling preserves logit ranking and signs. Each within-cluster score and merge gain is divided by $T$, preserving gain ordering and positivity. Induction then gives the same merge sequence.
+\subsection{Greedy feasibility and complexity}
+Singletons satisfy both constraints. Suppose two valid clusters pass $F(A,B)$. Their receiver sets are disjoint, and all cross edges pass. Their internal edges remain valid. Induction therefore proves feasibility. The main-text merge gain equals the change in $J$. Every accepted merge reduces the cluster count by one. There are at most $N-1$ scans of a dense $N\times N$ gain array. This requires $O(N^3)$ comparisons. The gain and feasibility arrays use quadratic storage.
+
+\section{Independent map-completion audit}
+The new audit uses \texttt{code/review\_mapping.py}. Adaptation seed $80{,}000{,}000+100{,}000r+j$ uses $r=0,\ldots,9$ and $j=0,\ldots,39$. Hidden source permutations use seed $83{,}000{,}000+r$. Anchor selection uses $84{,}000{,}000+100r+s$. Wrong-map interventions use $82{,}000{,}000+10{,}000r+10h+v$. Here $h$ is the wrong-entry budget and $v=0,1,2$. Wrong-entry counts are exact. Their values are generated by bijective permutations rather than independently replacing individual labels.
+
+\subsection{Receiver-pair factorization and cost}
+Receiver 0 keeps its known naming reference. Fixed partitions determine the co-grouped cross-receiver edges $\mathcal E_A$. Let $\mathcal E_{st}$ contain edges between receivers $s$ and $t$. These sets partition $\mathcal E_A$. Hence
+\[
+ J_A(\mathbf M,\mathcal C)=\sum_{s<t}\Psi_{st}(M_s,M_t),\qquad
+ \Psi_{st}(M_s,M_t)=\sum_{(i,j)\in\mathcal E_{st}}w_{ij}(M_s,M_t).
+\]
+An edge score depends only on its endpoints' maps. Entropy is invariant under permutation, while the probability inner product depends on the relative permutation. There are at most $K!$ relative permutations for a receiver pair, so the cache needs at most $K!$ distinct feature-score evaluations per pair. The joint map variables nevertheless remain dependent.
+
+Let $E_A=|\mathcal E_A|$. Let $d_s$ be the candidate count at source $s$. A known map has one candidate. Correct anchors give $d_s=(K-a_s)!$ at an unknown source. Let $P$ count receiver-pair terms. The joint domain has $Q=\prod_{s\in\mathcal U}d_s$ states. A conservative preprocessing bound is
+\[
+ O\!\left(E_A K K!+K\log K\sum_{s<t}d_s d_t\right).
+\]
+The first term covers relative-permutation dot products on edges. The second covers inverse-permutation construction and pair-table indexing across candidate-map pairs. The implemented broadcast summation then takes $O(PQ)$ time. Its dense objective array uses $O(Q)$ memory. A conservative bound including pair tables is $O(Q+\sum_{s<t}d_sd_t)$, excluding input records. In a dense network, $P$ can grow as $S(S-1)/2$. Receiver-pair factorization is not an $O(U(K!)^2)$ solution to the full coupled search.
+
+For four classes and three unknown receivers, $Q=13{,}824$. For four classes and six unknown receivers, $Q=191{,}102{,}976$. A float64 objective array alone then needs about 1.42 GiB. For six classes and three unknown receivers, $Q=373{,}248{,}000$. Its array needs about 2.78 GiB. These are arithmetic storage estimates. They are not runtime experiments. The delivered implementation rejects more than one million states before array allocation. Larger domains need approximate search, more anchors, or smaller variable blocks. Their accuracy is not evaluated here.
+
+\subsection{Coordinate coupling and a strict counterexample}
+Consider two unknown binary class maps and one known reference map. Let $I$ denote identity. Let $P$ denote a swap. Give each reference pair score 1 for $I$ and 0 for $P$. Give the unknown--unknown pair score 3 for equal maps and 0 otherwise. The joint objectives are
+\[
+\begin{array}{c|cc}
+ & M_2=I & M_2=P\\\hline
+ M_1=I & 5 & 1\\
+ M_1=P & 1 & 3
+\end{array}
+\]
+At $(P,P)$, either single-source change lowers the score from 3 to 1. Strict coordinate ascent therefore stays there. The joint state $(I,I)$ has score 5. This proves that a coordinate fixed point need not solve the conditional joint map block. The example uses constructed pair scores. It is not an RF accuracy experiment.
+
+A saved RF case verifies the mechanism under the frozen scorer. Use replication 0, five independent adaptation scenes, three unknown receivers, and no target anchors. Keep the physical-only provisional groups fixed. The saved coordinate map has objective 201.0133. Enumerating every single-source alternative gives maximum gain zero. Joint enumeration of 13,824 states raises the objective to 235.4834. All three unknown maps change. This check is implemented in \texttt{code/verify\_detail\_revision.py}. Its maps and full-precision scores are stored under \texttt{results/detail\_revision/}. The example's mapping accuracy is 0.5. The main table's 0.6 coordinate accuracy averages ten repetitions. They are different summaries.
+
+The sequential comparator stops after fitting maps to the initial physical groups. Alternating estimation accepts an improved feasible event partition before fitting maps again. Gains must exceed $10^{-10}$; ties retain the preceding state, and the procedure stops after at most ten sweeps. Test labels never select a map or stopping point.
+
+\subsection{Adaptation budget interpretation}
+The budgets 1, 5, and 40 form a sensitivity grid inherited from the historical probe. Each uses a prefix of the independent adaptation set. We report every budget. No test score selects a budget. Five is the smallest successful tested value in the four-class setting. Budgets two to four were not tested. The equal five- and 40-scene outcomes give no sample-complexity law for larger vocabularies. Class coverage, detection overlap, and provisional-group errors can all change map identifiability.
+
+Table~\ref{tab:all_mapping} lists all 27 configurations. Accuracy is correct withheld entries divided by withheld entries. Known reference entries and anchors are excluded. The raw summary also gives minimum and maximum replication accuracy. We do not assign independent-entry binomial intervals. Event F1 uses ten replication-level scene means. The same test scenes are reused across conditions.
+
+\begin{table}[!htb]\caption{All independent adaptation conditions for alternating estimation. Anchors are per unknown receiver. Correct/hidden counts sum over ten map seeds. Sequential event-pair F1 is identical in every condition. Exact denotes visible-event recovery.}\label{tab:all_mapping}
+\scriptsize\setlength{\tabcolsep}{3pt}\input{tables/review_mapping_full}\end{table}
+
+The many-to-one test repeats a common-class target in one map. The coarse-vector test supplies three columns. The unknown-class test adds a fifth column with mass 0.2. The remaining four columns carry mass 0.8. These inputs are rejected by schema validation. Rejection is not recovery of the omitted semantics. Common class renaming is tested on every original scene. All 800 co-membership matrices remain identical.
+\FloatBarrier
+
+\section{Assumption interventions and full decoder metrics}
+\texttt{code/review\_risks.py} reuses 200 nominal test scenes. A covariance intervention replaces the generated shared clock residuals. Equicorrelation is 0.8 or $-0.25$ for four receivers. Both matrices are positive definite. The inference path sees only declared covariance. It never sees the realized residual. A matched declaration changes the pair variance by the covariance term in the main method.
+
+The excess-delay intervention contaminates 30\% of genuine reports. Added delays are independent exponential draws with mean $8\,\mu$s. The false-alarm comparison adds three reports per receiver. Its independent and correlated cases use the same count and marginal template pool. The correlated case copies three sampled genuine-report templates to every receiver. The independent case samples a template separately for each added report. Sampling uses the same genuine-report pool. A template supplies its reported time, canonical carrier, bandwidth, duration, and canonical class vector. Added time jitter is Gaussian with standard deviation $0.2\,\mu$s. Added carrier jitter is Gaussian with standard deviation 120 Hz. Native class columns are re-encoded per receiver. Measurement standard deviations use the destination receiver's nominal declarations. No common interfering waveform is generated. Each inserted report has a separate singleton reference. This tests dependent false detections. It does not model a true interferer with one shared event identity.
+
+Each genuine report is selected independently with probability 0.2. A selected report receives one extra record at the same receiver. The original record stays unchanged. Both records keep the same transmission reference. The copy receives independent zero-mean Gaussian time jitter with standard deviation $0.15\,\mu$s. Its carrier receives independent Gaussian jitter with standard deviation 40 Hz. Bandwidth, duration, class probabilities, and uncertainty declarations are copied. This models duplicated or fragmented detection records. It does not simulate the waveform of a shorter physical segment. Let $n_{es}$ count those reports. The scene-level exclusivity-only recall ceiling is
+\[
+ R_{\max}=\frac{\sum_e\sum_{s<t}\min(n_{es},n_{et})}
+ {\sum_e\binom{\sum_s n_{es}}2}.
+\]
+Layering the first, second, and later copies across receivers attains the numerator without physical constraints. No feasible exclusive partition can exceed it. A scene without true pairs receives ceiling zero. Scene ceilings are averaged within replication. The ten replication means give the point in the main figure. The denominator includes same-receiver fragment pairs. The bound concerns recall, not F1. This is an evaluation-only bound. Truth counts never enter decoding.
+
+The raw audit records F1, ARI, $B^3$ F1, exact visible-event recovery, receiver violations, gate violations, and clutter attachment for all 54 condition--scorer--decoder combinations. Table~\ref{tab:all_risk_metrics} gives the joint accuracy--feasibility results. Student intervals in the CSV use ten replication means. Near-boundary untruncated intervals can extend beyond $[0,1]$; they are descriptive $t$ intervals rather than posterior probabilities.
+\input{tables/review_risks_full}
+\FloatBarrier
+
+\section{Medium-size objective audit}
+\texttt{code/review\_exact.py} selects the first two nominal test scenes with at least 40 reports in each replication. A recorded random ordering supplies nested subsets of 20, 30, and 40 reports. Selection does not inspect objective values or accuracy. Binary pair variables obey all three triangle inequalities for every triple. Same-receiver and rejected pairs are fixed to zero.
+
+Each solve requests zero relative gap with a five-second limit and one solver thread. A result is called exact only when optimality is proved. The result file stores status, incumbent, dual bound, reported gap, node count, and elapsed times. All 60 executed cases are proven optimal. Independent checks verify feasibility and recompute each returned objective. Relative greedy loss is $(J^*-J_g)/\max(|J^*|,10^{-9})$. Tiny negative roundoff is displayed as zero. Saved numerical values remain unchanged.
+
+The restart comparator includes ordinary greedy decoding. Up to eight positive feasible singleton edges define alternative first merges. Each run then completes the original greedy procedure. The best objective is retained. The four-node main-text example gives greedy score 5 and restart score 8. This is a search improvement without a global guarantee. The new timings use the recorded Windows review environment. They are not pooled with the original Linux runtime curves.
+
+\section{Metric traces, public sensitivity, and reproduction}
+\begin{table}[!htb]\caption{Controlled factorial pair-count trace. Macro F1 averages scene scores before averaging replications. Micro F1 pools TP, FP, and FN. The two estimands differ.}\scriptsize\setlength{\tabcolsep}{3pt}\input{tables/review_pair_counts}\end{table}
+\begin{table}[!htb]\caption{Public per-capture counts and feasibility for all original decoders. F1 uses reference-packet pairs. Rx and Gate are counts.}\scriptsize\setlength{\tabcolsep}{3pt}\input{tables/review_public_counts}\end{table}
+
+\texttt{code/review\_public.py} keeps all original test-report IDs. Unsupported clock corrections stay zero. Unsupported model or calibration fits are reported as NE in \texttt{setting\_status.csv}. Every split assignment is checked for reference overlap. Test identities never select preprocessing parameters.
+
+Saved public outputs include fitted parameters, predictions, and capture counts, with the sample MD5 verified. The original 0.99 quantile remains fixed; alternative quantiles serve as sensitivity checks.
+
+\noindent\begin{minipage}{\linewidth}
+Use \texttt{requirements-review-lock.txt} for the recorded package versions. The execution JSON files record Python, platform, package versions, and threading. The following commands run from the independent revision directory:
+\begin{verbatim}
+python -m pip install -r requirements-review-lock.txt
+python code/review_revision.py --task all
+python code/review_revision.py --task verify
+python code/make_review_artifacts.py
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error supplement.tex
+pdflatex -interaction=nonstopmode -halt-on-error supplement.tex
+\end{verbatim}
+\end{minipage}
+The all task preserves historical fits and results. The historical entry remains \texttt{code/reproduce.py}. New evidence is stored under \texttt{results/review\_revision/}. Artifact generation reads saved results. Runtime equality is not required.
+
+\subsection{Supplementary section and file index}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}lY>{\raggedright\arraybackslash}p{6.2cm}@{}}\toprule
+Section & Contents & Primary files or records\\\midrule
+S1 & Generator and observation schema & \texttt{code/experiment.py}\\
+S2 & Original stress design and splits & \texttt{results/split\_manifest.csv}; stress records\\
+S3 & Metrics and statistical denominators & \texttt{code/experiment.py}; \texttt{code/review\_common.py}\\
+S4 & Original diagnostics and small exact audit & \texttt{results/exact\_cases.csv}; diagnostic figures\\
+S5 & Notation & Main and supplementary TeX sources\\
+S6 & Historical reproduction & \texttt{code/reproduce.py}; \texttt{code/verify\_results.py}\\
+S7 & Executed LoED protocol & \texttt{code/loed\_benchmark.py}; \texttt{results/loed/}\\
+S8 & Known-map and re-encoding controls & \texttt{results/semantic\_alignment/}\\
+S9 & Historical small incomplete-map probe & \texttt{results/partial\_mapping\_extension/}\\
+S10 & Main proposition proofs & Main and supplementary TeX sources\\
+S11 & Mapping audit, search cost, coordinate trap & \texttt{code/review\_mapping.py}; \texttt{results/detail\_revision/}\\
+S12 & Assumption interventions and all decoders & \texttt{code/review\_risks.py}; \texttt{results/review\_revision/risks/}\\
+S13 & Medium-size integer-programming audit & \texttt{code/review\_exact.py}; \texttt{results/review\_revision/exact/}\\
+S14 & Counts, public sensitivity, and commands & \texttt{code/review\_public.py}; \texttt{code/review\_revision.py}\\
+S15 & Independent mapping, semantic, public, and latency tests & \texttt{code/deep\_revision.py}; \texttt{results/deep\_revision/}\\\bottomrule
+\end{tabularx}\end{center}
+\normalsize
+The dependency lock is \texttt{requirements-review-lock.txt}. The main Data Availability Statement identifies the same entry point. Run \texttt{python code/review\_revision.py --task detail} to check the added coordinate-trap proof and allocation guard. The source and results are supplied in the local project archive. A public code-repository URL is not asserted.
+
+\input{sections/supp_deep_revision}
+\end{document}

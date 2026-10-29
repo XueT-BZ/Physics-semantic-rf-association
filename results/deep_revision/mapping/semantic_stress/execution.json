@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "seconds": 23.963909900001454,
+  "scene_rows": 16800,
+  "map_fits": 420,
+  "feedback_vs_sequential_same_maps": 60,
+  "feedback_comparisons": 60
+}

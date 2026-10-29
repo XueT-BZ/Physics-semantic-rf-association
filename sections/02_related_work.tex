@@ -1,0 +1,36 @@
+\section{Related Work}
+\subsection{RF measurements and semantic interoperability}
+RF recognition estimates signal families. Its reliability depends on channel conditions, representations, and datasets \cite{syed2023,zhang2022amc,tian2026,wang2025transfer,xu2024xai}. Our inputs retain class probabilities, but many transmissions can share a family, so the family label cannot uniquely identify an event.
+
+Differential-delay estimation and hyperbolic localization use timing information \cite{knapp,chan}. Recent work examines localization trustworthiness, synchronization, and carrier offsets \cite{pettorru2024,hannotier2024,gur2025}. We use reported descriptors and a necessary pair-delay bound based on receiver separation, without estimating source coordinates. Pairwise feasibility does not necessarily imply a common feasible source position.
+
+SSN and SOSA describe sensors, procedures, and observed properties. PROV-O describes information origin \cite{ssn,sosa,prov}. Interoperability research addresses incompatible formats and vocabularies \cite{qaswar2023,emeterio2026}. Our registry follows this separation of value and meaning. The extension learns missing permutations within a declared vocabulary. It does not learn an ontology or reconcile class hierarchies.
+
+Emitter recognition estimates persistent transmitter identity. WiSig and collaborative RF-fingerprint studies examine receiver and channel variation \cite{wisig,shen2024,sun2024,ahmed2024}. Domain adaptation addresses related shifts \cite{zhang2025,yang2025,feng2025}. One transmitter can produce many events; our correspondence unit is a single transmission, and the inputs contain no waveform fingerprints.
+
+\subsection{Association, clustering, and confidence}
+Assignment, multiple-hypothesis tracking, and probabilistic association estimate measurement origin \cite{cengiz2024,kropfreiter2024}. Classification-aided inference combines class and spatial evidence \cite{bai2025}. Random finite-set models represent object count and trajectories \cite{vo2024overview}. Passive and multistatic systems impose further correspondence structure \cite{yan2024,ma2025,sruti2025}. These methods establish the need to assess whole assignments. They do not supply the observation contract for this RF report benchmark.
+
+The Hungarian method solves two-sided assignment \cite{kuhn}. Merging separate receiver-pair assignments can create globally conflicting groups. Signed correlation clustering instead scores a partition directly \cite{bansal}. Pruned-pivot methods address scaling, while min-max clustering uses a different loss \cite{dalirrooyfard2024,heidrich2024}. Must-link and cannot-link methods impose pair restrictions \cite{baumann2025}. Our objective belongs to this established family, with receiver exclusivity and physical admission as RF-specific restrictions. We evaluate their accuracy--feasibility tradeoff without claiming a general improvement over these method families.
+
+Temperature scaling adjusts numerical confidence \cite{guo}. Calibration reviews distinguish probability assessment from ranking \cite{silvafilho2023,zhangwang2026}. Distribution shifts can damage calibration \cite{gawlikowski2023,seligmann2023,liang2024}. We assess pair probabilities separately from partitions. The partition objective is a composite score. Shared receiver errors prevent an interpretation as independent pair likelihoods.
+
+\subsection{Class-map completion and permutation synchronization}
+Permutation synchronization jointly reconciles pairwise maps \cite{pachauri2013}. MatchLift estimates consistent partial correspondences from noisy pairwise matches \cite{chen2014}. These studies already establish global map consistency as an inference problem. Joint search and receiver-pair factorization alone therefore do not establish a new general matching algorithm.
+
+Our map variables register native signal-family columns, while the event variables group individual transmissions; one class can occur in many events. Provisional RF event groups supply report pairs whose probabilities define a score for every relative class permutation. Exact conditional search retains the full score tables. The adapted spectral comparator selects one relative permutation per receiver pair and then synchronizes those choices, discarding score margins between candidate maps. Both methods use the same provisional groups and pair evidence. Their comparison tests the value and cost of retaining the full tables in this RF formulation. It does not reproduce every setting or guarantee of the original synchronization paper.
+
+Precision--recall and partition indices have different denominators \cite{miller2024,hassan2024}. We report both accuracy and feasibility. Scene-level splits prevent shared events or receiver residuals from crossing training and test sets \cite{kapoor}. Uncertainty intervals use refitted replications rather than individual report pairs.
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Relation to other methods. The table lists what each method estimates and how it relates to this study. It does not claim that all earlier methods lack global consistency.}\label{tab:positioning}
+\small\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.16}
+\begin{tabularx}{\linewidth}{@{}p{3.8cm}p{4.05cm}Y@{}}\toprule
+Method family & Primary inference target & Role and boundary in this study\\\midrule
+RF sensing and recognition & Activity or signal class & Upstream descriptors, not common-event labels \cite{syed2023,zhang2022amc}.\\
+Physical localization & Delay or source position & Necessary geometric test, not a waveform or localization benchmark \cite{knapp,chan,hannotier2024,gur2025}.\\
+Multi-sensor association & Measurement origin or trajectory & Structural precedent, not directly comparable tracking performance \cite{cengiz2024,kropfreiter2024,yan2024}.\\
+Sensor semantics & Meaning and provenance & Declared field meanings, partly learned class permutations, and event correspondence; no ontology learning \cite{ssn,sosa,prov,emeterio2026}.\\
+Permutation synchronization & Compatible maps across sources & Structural precedent for class-map recovery; adapted spectral baseline uses the same provisional RF groups \cite{pachauri2013,chen2014}.\\
+Constrained clustering & Unknown-count partition & Signed objective with receiver and gate requirements \cite{bansal,baumann2025}.\\\bottomrule
+\end{tabularx}\end{adjustwidth}\end{table}
+\FloatBarrier

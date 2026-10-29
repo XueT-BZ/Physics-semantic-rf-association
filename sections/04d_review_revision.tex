@@ -1,0 +1,75 @@
+\subsection{Map robustness and multi-receiver completion}\label{sec:map_revision}
+\subsubsection{Incorrect relative mappings and shared renaming}
+The 800-scene wrong-map audit freezes the joint scorers and changes 0, 2, 4, 8, 12, or 16 of 16 entries through bijections. Three interventions per budget are averaged within replication. At 25\% corruption, F1 falls from 0.7798 to 0.6422; at 50\%, it is 0.5474 (Figure~\ref{fig:review_mapping}a). All groups remain feasible, showing that constraints cannot repair class meaning.
+
+The curve is nonmonotone because random permutations can retain relative agreement. A shared renaming changes every absolute entry but preserves all 800 partitions. Event F1 therefore cannot establish absolute naming accuracy.
+
+\subsubsection{Independent adaptation and conditional map optimization}
+Each replication supplies 40 adaptation scenes disjoint from all original splits and stress seeds, without refitting. One to three maps are hidden while receiver 0 stays known; unknown receivers receive zero to two anchors. Fixed prefix budgets 1, 5, and 40 are all reported, without test-selected stopping. The 27 configurations use ten seeds and reuse the initial 800 tests. This analysis followed inspection of those tests; the subsequent comparison uses independent tests.
+
+For three unknown maps without anchors, one scene recovers 75/120 entries with F1 0.6787. Five scenes recover 120/120 and restore F1 0.7798 (Table~\ref{tab:review_mapping}), as do forty. Budgets two to four were untested, so five is only the first successful tested value. The ten map interventions do not constitute 120 independent Bernoulli trials or establish larger-vocabulary sample complexity.
+
+Five-scene coordinate fitting recovers 60\% of entries with F1 0.7171, whereas exact fitting recovers all. In replication 0 with fixed groups, every single-map gain is nonpositive, but joint updating raises the objective from 201.0133 to 235.4834. Coupling between maps causes this trap despite complete source-domain enumeration. Exact sequential and alternating fitting tie in every tested configuration, with no added event-update gain.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Independent adaptation without target anchors. The reference map remains known. Counts sum ten interventions; F1 uses the same 800 tests. Coordinate updates one map at a time; sequential and alternating methods solve the exact conditional block. All receiver and gate violations are zero.}\label{tab:review_mapping}
+\small\setlength{\tabcolsep}{3pt}\input{tables/review_mapping}
+\end{adjustwidth}\end{table}
+
+\widefig{review_mapping}{Mapping interventions. (a) Relative-map errors harm association, whereas shared renaming preserves it. (b,c) Missing fractions use all 16 entries, with the reference known and no target anchors. Five- and 40-scene curves coincide. F1 bars use replication means; hidden-entry fractions are descriptive. All violation rates are zero.}{fig:review_mapping}
+
+Schema tests reject many-to-one maps, three-column coarse vectors, and a fifth unknown class with positive mass. This defines the implementation boundary, not open-set or hierarchical recovery. Supplementary Section S11 records anchors and maps.
+
+\input{sections/04e_mapping_comparison}
+\input{sections/04f_semantic_stress}
+
+\subsection{Risk under departures from the observation assumptions}\label{sec:risks_revision}
+The first 20 tests per replication support nine interventions, two frozen scorers, and three decoders, totaling 10,800 outcomes. Clock equicorrelations 0.8 and $-0.25$ compare diagonal and matched declarations. Their small effects here do not establish robustness to arbitrary dependence.
+
+Adding exponential delay with mean $8\,\mu$s to 30\% of genuine reports lowers gate recall from 0.9997 to 0.9353 and constrained F1 from 0.7822 to 0.7122. This is descriptor contamination, not measured NLOS validation.
+
+The alarm test adds 12 false reports by copying three templates to all four receivers. Templates share time, carrier, bandwidth, duration, and canonical class vectors before independent Gaussian timing jitter of s.d. $0.2\,\mu$s and frequency jitter of 120 Hz. Native classes are re-encoded. The independent control uses separate templates with matched counts and marginal pool. Each false report has singleton truth; no common interfering waveform is generated.
+
+Correlated false reports have clutter attachment 0.7821 versus 0.7061 in the independent control, yet F1 is also higher at 0.6023 versus 0.5105 (Table~\ref{tab:review_risks}). Both produce feasible false groups; dependence does not uniformly reduce F1.
+
+With probability 0.2, a genuine report receives a same-receiver copy carrying its transmission label. The original stays unchanged; the copy gets independent Gaussian timing jitter of s.d. $0.15\,\mu$s and frequency jitter of 40 Hz, while bandwidth, duration, and class probabilities remain copied. These are detection records, not simulated waveform segments. Constrained F1 is 0.6009.
+
+Let $n_{es}$ count reports of event $e$ at receiver $s$. The scene-level pair-recall ceiling under receiver exclusivity alone is
+\[
+ R_{\max}=\frac{\sum_e\sum_{s<t}\min(n_{es},n_{et})}
+ {\sum_e\binom{\sum_s n_{es}}2}.
+\]
+The denominator includes same-receiver fragment pairs, which exclusive groups cannot recover. Each receiver pair permits at most $\min(n_{es},n_{et})$ links, attainable by layered grouping without gates. Empty-positive scenes receive ceiling zero. Figure~\ref{fig:review_risks}b averages scene ceilings within replication and then across ten replications. The fragment value 0.6529 bounds recall, not F1 (Supplementary Section S12).
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Observation-assumption tests with ten replications of 20 scenes. Rx/gate entries are violation percentages; constrained zeros follow by construction. Clutter attachment counts false reports in non-singletons. The recall ceiling ignores gates and scores.}\label{tab:review_risks}
+\small\setlength{\tabcolsep}{3pt}\input{tables/review_risks}
+\end{adjustwidth}\end{table}
+\widefig{review_risks}{Assumption failures under frozen evidence. (a) Event F1 with 95\% replication intervals. (b) Gate recall and the exclusivity-only recall ceiling. Fragments can be unrepresentable despite admission, and correlated false reports can be feasible. Alarm controls have equal added-report counts.}{fig:review_risks}
+
+\subsection{Medium-size optimization audit}\label{sec:medium_exact}
+Report count alone selects the first two tests with at least 40 reports per replication. Nested random subsets of 20, 30, and 40 yield 60 MILPs under the frozen greedy objective. All 60 prove optimality within five-second limits at requested gap zero. Records retain incumbents, bounds, status, nodes, feasibility, and construction-plus-solve time.
+
+Greedy mean objective losses are 0.18\%, 0.21\%, and 0.46\%, without implying a general bound. At 40 reports, restarts reduce loss to 0.11\%; greedy, restart, and exact F1 are 0.7974, 0.8098, and 0.8142 (Table~\ref{tab:review_exact}). Better objective search helps this sample but does not establish event truth.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Medium-size audit against proven optima. Times are medians in the review environment, including MILP construction. Every decoder is feasible; unproven incumbents are not labeled exact.}\label{tab:review_exact}
+\small\setlength{\tabcolsep}{3pt}\input{tables/review_exact}
+\end{adjustwidth}\end{table}
+
+\paragraph{Fixed-registry processing time.}
+Fresh report-path timing includes feature construction, scoring, and decoding for ten scenes at each of 40, 80, and 120 reports. Greedy medians are 0.64, 1.80, and 3.63 ms; triangle MILP medians are 34.56, 284.37, and 956.65 ms. All 30 solves prove optimality. The one-second cap excludes construction, which raises the maximum path to 1014.16 ms. These implementation timings assume no deployment deadline and exclude waveforms and offline map fitting. At 40 reports, greedy F1 is 0.8068 versus MILP F1 of 0.7781. Supplementary Section S15 records timings, solver status, and memory scope.
+
+\input{sections/04a_public_data}
+\subsection{Sensitivity of the auxiliary public check}\label{sec:public_sensitivity}
+The public sensitivity audit fixes all 23,677 test IDs while varying training, calibration, clock correction, or quantile (Table~\ref{tab:review_public}). Original F1 is 0.9975, unchanged with May 2020 training alone. The two 2019 blocks provide one positive pair and no clock pair meeting ten-reference support, giving zero F1. Two settings lack usable training classes or calibration matches and are reported NE.
+
+Without clock correction, metadata F1 is 0.9457. Quantile 0.95 gives F1 0.9933; quantile 0.999 expands the gate to 3.31 s and gives 0.9905. More candidates need not improve association. The original 0.99 rule stays fixed without test-F1 selection.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Public preprocessing sensitivity with unchanged test reports. Train positives count reference pairs available to scorer fitting. Clock corrections require at least ten matches for a receiver pair. $G$ is the empirical time gate. F1 is reference-packet F1. NE means the required fit cannot be estimated.}\label{tab:review_public}
+\small\setlength{\tabcolsep}{3pt}\input{tables/review_public_sensitivity}
+\end{adjustwidth}\end{table}
+
+\input{sections/04g_loed_audit}
+\FloatBarrier

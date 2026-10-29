@@ -1,0 +1,7 @@
+day,split,raw_rows,raw_gateways,crc_valid_rows,valid_unconfirmed_uplink_rows,exact_duplicate_rows_removed,minimum_time_relative_to_named_day_s,maximum_time_relative_to_named_day_s,invalid_observable_rows_removed,repeated_gateway_or_long_span_groups_removed,ambiguous_rows_removed,cross_split_shared_payload_rows_removed,eligible_reports,reference_packets,visible_reference_packets,reference_positive_pairs,eligible_gateways
+2019-03-03,train,122208,4,83273,79501,40,-1875.797181,86398.38833579,0,34876,69891,0,9570,9569,1,1,2
+2019-04-02,train,108046,3,71230,68665,16,0.119024067,86396.132019541,0,30023,60095,0,8554,8554,0,0,1
+2020-05-02,train,29977,3,23760,21366,0,1.476092,86397.943819,0,20,41,2,21323,21067,256,256,2
+2020-07-03,calibration,25659,3,20221,17271,0,3.828641,86397.865234,0,9,19,0,17252,16818,434,434,2
+2020-08-03,test,26588,2,20296,15282,0,13.948912,86381.387902,0,13,27,1,15254,14351,903,903,2
+2020-09-02,test,14392,4,10417,8444,0,0.689195,44928.364055,0,10,20,1,8423,7909,514,514,2

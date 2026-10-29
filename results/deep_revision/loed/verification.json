@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "calibration_pairs": 434,
+  "calibration_above_2s": 4,
+  "calibration_above_2s_all_channel_mismatched": true,
+  "raw_timestamp_columns": [
+    "time"
+  ],
+  "raw_tail_rows_checked": 24,
+  "unchanged_test_reports": 23677,
+  "original_reference_counts_reproduced": true,
+  "clock_estimator_label_free_columns": true,
+  "no_test_identity_in_offset_fit": true,
+  "all_test_references_retained": true,
+  "clock_estimator_checks": {
+    "known_shift_sign_and_magnitude": true,
+    "equal_separated_modes_rejected": true
+  },
+  "identical_partitions_by_capture": {
+    "2020-08-03": true,
+    "2020-09-02": true
+  },
+  "seconds": 103.53625889999967,
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "archive_sha256": "6b9d20ad3a513fde35b05f9f250da6da815068d13cdc78035fcce915b25fc046"
+}

@@ -1,0 +1,288 @@
+{
+  "status": "PASS",
+  "comparisons": 3200,
+  "details": [
+    {
+      "replicate": 0,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 0,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 0,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 0,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 2.220446049250313e-16,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 1,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 1,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 1,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 1,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 2,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 2,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 2,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 2,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 3,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 3,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 3,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 3,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 4,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 4,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 4,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 4,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 5,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 5,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 5,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 5,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 5.051514762044462e-14,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 6,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 6,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 6,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 6,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 2.220446049250313e-16,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 7,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 7,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 7,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 7,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 4.429012712137137e-11,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 8,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 8,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 8,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 8,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 9.425793479067579e-14,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 9,
+      "scorer": "physics",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 9,
+      "scorer": "joint",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 9,
+      "scorer": "unweighted",
+      "maximum_pair_probability_difference": 0.0,
+      "equal_partitions": 80,
+      "scenes": 80
+    },
+    {
+      "replicate": 9,
+      "scorer": "boosted",
+      "maximum_pair_probability_difference": 7.327471962526033e-14,
+      "equal_partitions": 80,
+      "scenes": 80
+    }
+  ],
+  "maximum_probability_difference": 4.429012712137137e-11,
+  "original_scenes_used_for_verification_only": true
+}

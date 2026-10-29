@@ -1,0 +1,8 @@
+\subsection{Public-reference tails and clock supervision}\label{sec:deep_loed}
+Of July's 434 reference pairs, four have corrected differences above two seconds despite matching payloads and counters; their reported channels differ. Five May pairs and two September pairs show the same pattern, while all 2096 other 2020 pairs have matching channels. Original CSV checks confirm these fields. A single timestamp without an independent transmission identifier cannot distinguish repetitions from metadata errors; all pairs remain evaluated.
+
+July's 0.99 quantile interpolates between 2.120 and 3.471 ms; the 0.999 quantile lies between 2.136977 and 4.201604 s, explaining the jump to 3.308 s. Channel disagreement further limits the payload reference's physical meaning, precluding interpretation as clock drift alone.
+
+A reference-free training lag histogram uses time, channel, spreading factor, and gateway ID with fixed support and peak-separation rules. Refinement contains 251 candidates with median 0.999985 s, matching the supervised offset numerically. Both fits give identical partitions on 23,677 reports, with TP 1411, FP 1, FN 6, and F1 0.9975. Population selection, scoring, and gate calibration remain reference-assisted (Supplementary Section S15).
+
+The 2019-only fit has one positive pair from gateways absent in the 2020 tests, and April has no cross-gateway reference pair. Zero F1 combines sparse supervision and unsupported calibration rather than isolating drift. These retrospective checks diagnose preprocessing and reference construction.

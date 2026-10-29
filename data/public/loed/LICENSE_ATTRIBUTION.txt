@@ -1,0 +1,16 @@
+LoED: The LoRaWAN at the Edge Dataset, version 3 (2020).
+Creators: Laksh Bhatia, Michael Breza, Ramona Marfievici, Julie A. McCann.
+Publisher: Zenodo. DOI: https://doi.org/10.5281/zenodo.4121430
+Original study: https://doi.org/10.1145/3419016.3431491
+License in the publisher's metadata: Creative Commons Attribution 4.0 International.
+License text: https://creativecommons.org/licenses/by/4.0/
+
+The publisher's six-file sample archive is retained without modification.
+Its MD5 is 7370baddc9b546354c26a71cd38981bc.
+The filtered observations, reference hashes, and predictions in results/loed/
+are derived by code/loed_benchmark.py with exclusions documented in inclusion.csv.
+No synthetic noise, class probabilities, or receiver geometry are added.
+
+Any separately downloaded author manuscript PDF is a reading reference and is
+not included in the reproducibility archive. Consult the original publication
+for its own rights statement.

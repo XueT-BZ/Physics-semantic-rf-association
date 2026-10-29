@@ -1,0 +1,27 @@
+Light revision protocol, 2026-10-21. All work is confined to this backup copy.
+Keep the original title, scoring feature, frozen models, gates, decoder, figures,
+tables and baseline numbers. Add a bounded, optional incomplete-registry module.
+Controlled probe: same 10 repetitions and 800 released test scenes, original
+frozen joint and physical scores, no generator changes. Source 1 has one known
+class anchor; its other three mappings are hidden. Other source registries are
+known. Native re-encoding seed 9100000+r is constant across adaptation/test.
+Use original calibration-descriptor prefixes of 1, 5 and 40 scenes for adaptation;
+no adaptation event identity enters the new module. Existing scalar temperatures
+are already calibrated offline; positive uniform rescaling does not change the
+partition or map search. Report the reused-calibration provenance transparently.
+Compare anchor-compatible unresolved completion, sequential fit on physical
+groups, safeguarded map/partition feedback, and complete-map reference.
+Enumerate the six anchor-compatible source-1 permutations with all other maps
+fixed, using the original entropy-weighted log compatibility and signed weights.
+Do not substitute a bilinear semantic score or a newly trained classifier.
+Public probe: keep the original six-file study unchanged. For this additional
+probe only, use 2020-08-03 as unlabeled mapping adaptation and 2020-09-02 as test.
+Use original frozen timing and metadata models. Source 0 map is known. At source
+1 only the SF7/SF12 native correspondence is hidden (swapped intervention); the
+four other mappings are fixed. Exact two-candidate updates use the original
+metadata score, whose SF input is a mismatch indicator. No synthetic recognizer
+posterior is claimed. Evaluate mapping and packet grouping separately.
+No test identities select mappings, iteration counts or data budgets. Ties keep
+the previous state; accept only objective gains >1e-10; cap at 10 sweeps. No claim
+that feedback must improve over a sequential fit. This is exploratory development,
+not external preregistration or naturally heterogeneous protocol validation.

@@ -1,0 +1,174 @@
+\section{Experiments and Results}\label{sec:experiments}
+The controlled benchmark tests the class-probability mechanism, followed by independent mapping comparisons and semantic stress tests. The public check provides auxiliary evidence from measured metadata. Scorer coefficients and gate rules remain fixed throughout these comparisons.
+
+\subsection{Controlled descriptor benchmark and evaluation protocol}
+\subsubsection{Synthetic multi-receiver scenes}
+A nominal scene places four receivers on a randomly rotated circle of radius 2000 m. It contains $E=14$ hidden \emph{transmission instances}, indexed $e=0,\ldots,13$, each with its own time, position, carrier, bandwidth, duration, and anonymous family label. The 14 bursts are not 14 classes, named protocols, reports, or persistent emitters. Independent detection gives zero to four reports per burst; at probability 0.8, the expected genuine total is $14\times4\times0.8=44.8$, before clutter.
+
+Initial positions are drawn in a $3000\times3000$ m square and start times in a $120\,\mu$s window. Carrier and bandwidth are drawn independently before near-collision overrides:
+\begin{equation}
+ \begin{aligned}
+ f_e^{(0)}&=100\,\mathrm{MHz}+m_e(1.8\,\mathrm{kHz})+\eta_e,
+ &&m_e\sim\operatorname{Unif}\{0,\ldots,5\},\\
+ \eta_e&\sim\mathcal N(0,(180\,\mathrm{Hz})^2),
+ &&B_e^{(0)}\sim\operatorname{Unif}[20,60]\,\mathrm{kHz}.
+ \end{aligned}
+ \label{eq:carrier_generator}
+\end{equation}
+The 1.8 kHz carrier spacing and 20--60 kHz bandwidth deliberately create overlapping descriptors: six centers span only 9 kHz. The 180 Hz event perturbation $\eta_e$ is shared across reports and cancels from true-pair differences. It is separate from receiver residuals of 250 Hz and report errors of 120--360 Hz (Table~\ref{tab:configuration}); the 180 Hz value is not a waveform spectral width.
+
+Initial durations are uniform over 20--80 $\mu$s. Each event after the first has probability 0.25 of copying an earlier event's time, carrier, bandwidth, and duration with small perturbations, while retaining independent position and class. These overrides can move parameters beyond the initial ranges.
+
+The collisions create descriptor ambiguity without simulating interference, packet detection, or overlapping-waveform demodulation. All 14 first-scene events and detecting receivers are recorded in \texttt{results/event\_ledger\_r00\_test000.csv}.
+
+\begin{table}[!t]
+\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Nominal generator and inference settings. Receiver index $s$ starts at zero. Standard deviations describe measurement errors unless marked as shared residual biases. Supplementary Sections S1--S2 give the generation order and stress changes.}\label{tab:configuration}
+\small\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}p{5.1cm}Y@{}}\toprule
+Quantity & Configuration \\\midrule
+Receivers; transmission instances; classes & $S=4$; $E=14$; $K=4$ anonymous signal-family labels \\
+Nominal carrier-center spacing & 1.8 kHz; six centers around 100 MHz, not channel bandwidth \\
+Event carrier perturbation s.d. & 180 Hz, shared across reports of one event before collision overrides \\
+Initial event bandwidth; duration & Uniform 20--60 kHz; uniform 20--80 $\mu$s, before collision overrides \\
+Detection; clutter & Detection probability 0.8; independent Poisson mean 0.8 per receiver \\
+Timing; carrier measurement s.d. & $(0.6+0.4s)\,\mu$s; $(0.12+0.08s)$ kHz \\
+Bandwidth; duration measurement s.d. & $(1.5+0.3s)$ kHz; $(1+0.3s)\,\mu$s \\
+Scene-shared receiver residuals & Clock s.d. $0.8\,\mu$s; oscillator s.d. 0.25 kHz; correctly declared nominally \\
+Semantic corruption; missingness & Wrong-class probability 0.12; missing-vector probability 0.10 \\
+Reported class confidence & Correct: uniform $[0.60,0.95]$; incorrect: uniform $[0.45,0.90]$ \\
+Linear scorer; calibration & $C_{\rm reg}=1$, maximum 500 iterations; $T\in[0.1,10]$ \\
+Boosted comparator & 100 iterations; 15 maximum leaf nodes; learning rate 0.08; $L_2=1$ \\
+Gate; greedy numerical cutoff & $k=3.5$; positive merge gain exceeding $10^{-10}$ \\\bottomrule
+\end{tabularx}\end{adjustwidth}
+\end{table}
+
+Detection probability is 0.8 with independent clutter. Clock and oscillator residuals are scene-shared, whereas detector errors are drawn per report. Native frequency units and class permutations are applied before shuffling.
+
+Generated class vectors give the designated family confidence in $[0.60,0.95]$ when correct and $[0.45,0.90]$ when wrong, distributing remaining mass equally. Missing vectors are uniform (Table~\ref{tab:configuration}). These are synthetic inputs, not trained waveform-classifier outputs; Section~\ref{sec:public_data} treats measured records separately.
+
+\subsubsection{Scene splits and reproducible implementation}
+Ten replications independently regenerate the scenes and refit scorers. Replication $r\in\{0,\ldots,9\}$ uses seed $10^6+10^5r$, split offsets 0, 10,000, and 20,000, and the scene index. Splitting 120/40/80 scenes before pairing prevents event or receiver-residual leakage across splits \cite{kapoor}.
+
+\begin{table}[!t]\caption{Nominal data totals over ten replications. Positive pairs represent a common true event; all listed pairs are cross-receiver.}\label{tab:splits}
+\centering\small\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{lrrrr}\toprule
+Split & Scenes & Observations & Pairs & Positive pairs \\\midrule
+Training & 1200 & 57,227 & 1,023,517 & 63,897 \\
+Calibration & 400 & 19,113 & 342,476 & 21,395 \\
+Test & 800 & 38,451 & 693,023 & 43,151 \\\bottomrule
+\end{tabular}\end{table}
+
+Table~\ref{tab:splits} gives observed counts. The implementation uses NumPy, SciPy, and scikit-learn \cite{sklearn,scipy}. Original runs used Python 3.13.5, NumPy 2.3.5, SciPy 1.17.0, scikit-learn 1.8.0, and pandas 2.2.3 on Linux with an AMD EPYC 9V74 processor. Added experiments record a Windows environment. Numerical libraries use one thread without a GPU; original timing curves exclude generation, features, fitting, and scoring.
+
+\subsubsection{Comparators, ablations, and metrics}
+We compare timing-only, frequency-only, semantics-only, physical, and six-input linear or boosted scorers. Raw-frequency ablation removes conversion only from the frequency \emph{feature}, retaining the canonical gate and other inputs. Separate variants remove entropy weighting, gating, or temperature scaling.
+
+All decoders share observations and pair evidence. Components join admitted edges above 0.5. Pairwise assignment allows zero-gain dummies and then unions receiver-pair matchings, without optimizing a global multipartite assignment.
+
+Constrained scorers use Algorithm~\ref{alg:greedy}. Ablations remove exclusivity or complete cross-pair admission separately. Without exclusivity, unscored same-receiver edges have zero weight. Stress tests retain nominal fitted parameters.
+
+AUROC and non-interpolated average precision (AP) assess discrimination; Brier error and clipped negative log-likelihood (NLL) assess probabilities \cite{silvafilho2023,miller2024}. Pair tables include rejected pairs, whereas reliability diagrams use admitted pairs in ten equal-width bins.
+
+Partition metrics use \emph{all unordered observation pairs}, so same-receiver false links are penalized. Event-pair F1 is
+\begin{equation}
+ F_1=\frac{2\,\mathrm{TP}}{2\,\mathrm{TP}+\mathrm{FP}+\mathrm{FN}},\label{eq:f1}
+\end{equation}
+TP, FP, and FN count common, predicted-only, and true-only co-memberships. We also report ARI, $B^3$ F1, exact visible-event recovery, and clutter attachment \cite{hassan2024,miller2024}. Exact recovery requires an event seen at least twice to be recovered without additions or omissions. Receiver violations use non-singleton clusters, while gate violations use predicted within-cluster cross-receiver edges (Supplementary Section S3).
+
+Pair metrics pool 80 scenes per replication; partition metrics first average scene scores. Ten-replication means use 95\% intervals $\bar x\pm t_{0.975,9}s_x/\sqrt{10}$, with Student $t$ on nine degrees of freedom and replication standard deviation $s_x$. The F1 estimand is $\frac1{10}\sum_{r=1}^{10}\frac1{80}\sum_{b=1}^{80}F_{1,rb}$. Joint constrained counts are TP $=30{,}063$, FP $=3589$, and FN $=13{,}088$; TP $+$ FN equals the 43,151 test positives (Table~\ref{tab:splits}). Micro F1 is 0.7829 versus scene-macro F1 of 0.7798. Supplementary Section S14 gives all counts; method differences are paired before interval calculation.
+
+The 693,023 dependent pairs are not independent replications. Intervals describe generation and refitting under this model, not variation across field deployments.
+
+\subsection{Representation and known-vocabulary alignment checks}\label{sec:alignment_audit}
+The mapping audit reuses 800 scenes and ten frozen joint-linear scorers with fixed gates and decoding. Correctly mapped, bypassed native, and uniform class vectors change the input only, without new scenes or fitting.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Event alignment under supplied class maps. All rows use the same frozen joint scorer, physical gate, decoder, and scenes. F1 scores event matches. It does not measure recovery of an unknown vocabulary. Intervals use ten replication-level means.}\label{tab:semantic_alignment}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/semantic_alignment}
+\end{adjustwidth}\end{table}
+
+Mapped F1 is 0.7798 versus 0.4521 for bypass, a paired difference of 0.3277 with 95\% interval $[0.3162,0.3392]$. Uniform vectors give 0.6438, compared with 0.6813 from separately refitted physical scoring. Input removal and refitting answer different questions. All conditions remain feasible, so structural checks do not correct class meaning.
+
+Matched unit and class-order changes preserve all 800 partitions with zero feature or probability difference, checking Equation~\eqref{eq:class_mapping}. The 800 re-encodings reuse scenes and do not test independent accuracy or unknown, partial, or hierarchical maps. Outputs are retained in \texttt{results/semantic\_alignment/}.
+
+\subsection{Pair discrimination and confidence quality}
+Class evidence raises calibrated linear AP from 0.6890 to 0.7979 (Table~\ref{tab:pair}), a paired gain of 0.1089 with 95\% interval $[0.1015,0.1164]$. It resolves some physical ambiguity that moderate single-modality AUROC obscures. Boosting reaches AP 0.8343, indicating useful nonlinear interactions.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Pair results over ten independently fitted replications. Higher AUROC and AP are better. Lower Brier error and NLL are better. $T$ means temperature scaling. AP intervals use variation across replications.}\label{tab:pair}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/pair}
+\end{adjustwidth}\end{table}
+
+\pairedfig{results_pr}{All cross-receiver test pairs.}{results_reliability}{Admitted pairs of the joint linear model.}{Diagnostics for held-out replication 0. (a) Precision--recall curves compare physical, joint linear, and boosted scores with gating and calibration. (b) Ten-bin confidence summaries and their post-minus-pre differences. Horizontal displacement $\pm0.006$ improves legibility without altering values. Tables provide uncertainty across replications.}{fig:pair_results}
+
+Figure~\ref{fig:pair_results}a compares discrimination; Figure~\ref{fig:pair_results}b evaluates admitted-pair confidence, matching the temperature-fitting population. Scaling changes paired Brier error by $-2.88\times10^{-5}$ with interval $[-5.60\times10^{-5},-1.55\times10^{-6}]$: statistically nonzero but numerically modest.
+
+Positive rescaling preserves unsaturated ranking. All 800 executable nominal partitions remain unchanged, consistent with Proposition~\ref{prop:temperature}; calibration changes confidence without clustering gain.
+
+Removing concentration weighting raises ungated AP from 0.7963 to 0.8202, showing that diffuse compatibility can remain useful. Raw-frequency AP falls to 0.7757, with other features and the canonical gate partly compensating. Entropy weights are not a universal reliability estimate, and this frequency ablation does not remove the full observation contract.
+
+\subsection{Event partitions and the role of explicit constraints}
+Joint constrained F1 is 0.7798 versus physical-only F1 of 0.6813 (Table~\ref{tab:cluster}; Figure~\ref{fig:partition_results}), a paired gain of 0.0985 with interval $[0.0887,0.1083]$. Components yield F1 0.6764, recall 0.8985, and precision 0.5703 because unchecked chains can create oversized or receiver-conflicting groups.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Scorer--decoder combinations on 800 test scenes. Decoders share each scorer's probabilities and gates; F1 intervals use ten refitted replications. Receiver conflicts are counted per non-singleton cluster and gate violations per predicted within-cluster cross-receiver edge.}\label{tab:cluster}
+\small\renewcommand{\arraystretch}{1.10}\input{tables/factorial}
+\end{adjustwidth}\end{table}
+
+\widefig{results_partition}{Event-pair F1 for each scorer and decoder. Points show means of ten replication-level averages. Bars show 95\% $t$ intervals. All methods use the same held-out scenes. Unweighted semantics and boosted scoring both give higher F1 than the joint constrained reference.}{fig:partition_results}
+
+Receiver conflicts affect 21.14\% of non-singleton component clusters and 10.49\% of assignment clusters. Algorithm~\ref{alg:greedy} prevents receiver and gate violations, but its precision 0.8932 and recall 0.6972 leave many true pairs unjoined.
+
+Assignment gives similar F1 (0.7797) and higher exact recovery (0.5973 versus 0.5375), while producing some infeasible groups. Accuracy and structural validity must therefore be assessed together.
+
+Table~\ref{tab:cluster} crosses four scorers and three decoders. Boosted F1 is 0.7016 for components, 0.8130 for assignment, and 0.8238 for constraints. The constrained-minus-assignment gain is 0.0108 with 95\% interval $[0.0020,0.0196]$, while assignment retains 8.57\% receiver conflicts.
+
+Physical-only constrained F1 is 0.6813 versus assignment F1 of 0.7145, a difference of $-0.0332$ with interval $[-0.0439,-0.0225]$. Joint and unweighted intervals include zero. Constraint accuracy depends on evidence, while feasibility is common to all constrained scorers. The 9600 outcomes and frozen probabilities reproduce the retained results.
+
+Removing exclusivity lowers F1 to 0.7361 and repeats receivers. Removing complete admission gives F1 0.7796 but permits rejected within-group edges, making this check principally a nominal feasibility safeguard.
+
+Unweighted and boosted scoring give F1 0.7983 and 0.8238. The former motivates the simpler linear default; weighted scoring remains the historical control. Independent validation retains all three semantic scorers for event and missing-map tests.
+
+\subsection{Admission sensitivity and distribution shifts}
+\subsubsection{Gate width and irreversible pair removal}
+The frozen-scorer sweep uses the first 20 scenes per replication (Table~\ref{tab:gate}). At $k=1$, true-pair recall is 68.37\% and F1 is 0.5975; later semantics cannot restore rejected edges. At $k=3.5$, recall is 0.9997 with 17.72\% of candidates retained. Increasing $k$ to 5 adds competition with little gain. At $k=3.5$, F1 0.7822 differs from 0.7798 because the sweep uses 20 rather than 80 scenes.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Gate-width test on 200 nominal scenes: ten replications times the first 20 test scenes. Retained pair fraction counts admitted cross-receiver pairs. True-pair recall uses only pairs from a common true event.}\label{tab:gate}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/gate}
+\end{adjustwidth}\end{table}
+
+\subsubsection{Incorrect semantics and misspecified receiver uncertainty}
+The frozen-model grid has 34 settings: 12 named conditions, six semantic-error probabilities, 12 actual-versus-declared clock combinations, and four scene sizes. Each uses 20 scenes per replication with seeds disjoint from nominal splits. Reusing stress schedules couples comparable draws; the 34 settings are controlled interventions, not separate measured datasets.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Named stress tests with 200 scenes per condition. The separated first row is the stress-seed reference. It differs from the nominal test subset in Table~\ref{tab:gate}. The semantic-error row uses error probability 0.45. All other settings follow the stated intervention. The scorer, scaler, gate multiplier, and temperature stay fixed. F1 is event-pair F1. The last column is true-pair gate recall.}\label{tab:stress}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/stress}
+\end{adjustwidth}\end{table}
+
+\pairedfig{results_semantic}{Increasing semantic-label error.}{results_clock_f1}{Increasing receiver clock residual.}{Frozen-model stress tests. Upper panels show ten-replication means and 95\% intervals; lower panels enlarge method differences on separate scales. Symbols shift by $\pm0.007$ in (a) and $\pm0.12\,\mu$s in (b), with trend lines at true values. Incorrect class confidence can harm joint scoring; correct clock declarations reduce but do not remove timing ambiguity.}{fig:stress_results}
+
+The stress reference gives F1 0.7758 (Table~\ref{tab:stress}, first row). At semantic-error probability 0.45, joint F1 is 0.6308 versus physical F1 of 0.6727 (Table~\ref{tab:stress}). One confidently wrong receiver reduces joint F1 to 0.5117: its family is shifted to $(q_e+1)\bmod K$ with confidence 0.99, remaining mass 0.01, and missingness disabled. Equation~\eqref{eq:entropy} cannot detect these concentrated errors, defining a failure regime in Figure~\ref{fig:stress_results}a.
+
+Actual oscillator s.d. 1.5 kHz versus declared 0.25 kHz reduces gate recall to 0.5606 and F1 to 0.4110. With clock s.d. $20\,\mu$s, declaring $0.8\,\mu$s gives F1 0.3136; matching the declaration raises it to 0.5486.
+
+Gate recall rises from 0.4581 to 0.9996 (Figure~\ref{fig:runtime_results}a), but broader uncertainty also admits more competing matches. Restoring coverage alone does not restore accurate grouping.
+
+Positive delays reduce gate coverage, while variance-matched heavy tails have a smaller effect here. The fifth-receiver test changes network size within the generator, not arbitrary receiver domains. Clutter and detection changes alter visibility and metric denominators, so higher scores do not establish a benefit from clutter or missed detections.
+
+\FloatBarrier
+\subsection{Computational cost, exact audit, and reproducibility}
+\pairedfig{results_clock_gate}{Gate coverage under clock misspecification.}{results_runtime}{Measured dense-decoder runtime.}{Coverage and runtime diagnostics. (a) Fixed and matched uncertainty, with their recall difference below; symbols shift by $\pm0.12\,\mu$s only for legibility. (b) Physical and joint runtimes use equally scaled log axes and a percentage-difference strip. Event counts 8, 16, 32, and 64 yield different report counts. Timings exclude generation and scoring; ten-replication intervals are specific to this hardware.}{fig:runtime_results}
+
+Figure~\ref{fig:runtime_results}b shows increasing dense-decoder work. Four sizes do not establish an asymptotic exponent; Proposition~\ref{prop:greedy} provides the $O(N^3)$ bound. The implementation retains dense matrices, so no sparse-implementation speedup is demonstrated.
+
+Across 60 scenes with 11--19 reports, greedy and exact objectives agree in 47 cases. Relative gap $(J^*-J_g)/\max(|J^*|,10^{-9})$ averages 1.71\% and peaks at 16.82\%. Mean F1 is 0.7053 for greedy and 0.7182 for exact inference.
+
+This comparison holds the \emph{same learned objective} fixed. It measures small-instance optimization loss, not larger-instance near-optimality or a monotone relation to true F1. Figure~\ref{fig:decoder} illustrates the greedy limit; detailed gaps and selective-pair risk--coverage curves remain in the supplement.
+
+Audits regenerate all 2400 nominal scenes, verify splits and counts, recompute summaries and invariants, and compare predictions with fitted parameters. Stored outputs retain 6400 original rows and the separate 9600-row factorial, whose accuracy and feasibility are recomputed from saved labels.
+
+Scientific outputs repeat within floating-point tolerance, while runtimes depend on execution conditions. Subsequent assumption tests remain descriptor-based.
+\input{sections/04c_partial_mapping}
+\input{sections/04d_review_revision}

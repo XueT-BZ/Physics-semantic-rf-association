@@ -1,0 +1,60 @@
+[
+  {
+    "case": "noiseless_conventions_and_bounded_perturbation",
+    "K": 2,
+    "S": 3,
+    "status": "PASS",
+    "minimum_ideal_pair_margin": 2,
+    "maximum_absolute_score_perturbation": 0.1
+  },
+  {
+    "case": "noiseless_conventions_and_bounded_perturbation",
+    "K": 3,
+    "S": 3,
+    "status": "PASS",
+    "minimum_ideal_pair_margin": 2,
+    "maximum_absolute_score_perturbation": 0.1
+  },
+  {
+    "case": "noiseless_conventions_and_bounded_perturbation",
+    "K": 4,
+    "S": 3,
+    "status": "PASS",
+    "minimum_ideal_pair_margin": 2,
+    "maximum_absolute_score_perturbation": 0.1
+  },
+  {
+    "case": "noiseless_conventions_and_bounded_perturbation",
+    "K": 5,
+    "S": 3,
+    "status": "PASS",
+    "minimum_ideal_pair_margin": 2,
+    "maximum_absolute_score_perturbation": 0.1
+  },
+  {
+    "case": "no_pair_information",
+    "optimal_states": 13824,
+    "status": "PASS"
+  },
+  {
+    "case": "actual_uniform_probability_vectors",
+    "optimal_states": 13824,
+    "status": "PASS",
+    "objective_range": 0.0
+  },
+  {
+    "case": "receiver_3_disconnected_from_reference_component",
+    "optimal_states": 24,
+    "status": "PASS"
+  },
+  {
+    "case": "connected_path_missing_direct_pairs_nonidentity_known_reference",
+    "status": "PASS",
+    "known_reference": [
+      0,
+      3,
+      1,
+      2
+    ]
+  }
+]

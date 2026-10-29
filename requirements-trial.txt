@@ -1,0 +1,8 @@
+# Trial verified on Python 3.12.14; original frozen parameters reused.
+numpy==2.5.4
+scipy==1.17.0
+pandas==3.0.1
+scikit-learn==1.8.0
+threadpoolctl==3.6.0
+PyMuPDF==1.26.7
+Pillow==12.3.0

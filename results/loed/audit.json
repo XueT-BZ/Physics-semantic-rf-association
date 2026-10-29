@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "dataset_doi": "10.5281/zenodo.4121430",
+  "license": "CC-BY-4.0",
+  "archive_md5": "7370baddc9b546354c26a71cd38981bc",
+  "archive_sha256": "6b9d20ad3a513fde35b05f9f250da6da815068d13cdc78035fcce915b25fc046",
+  "measured_data": true,
+  "synthetic_noise_or_class_probabilities_added": false,
+  "reference": "Full-PHY-payload identity under explicit uniqueness/span exclusions; not independent physical burst ground truth.",
+  "splits": {
+    "calibration": {
+      "raw_rows": 25659,
+      "eligible_reports": 17252,
+      "reference_packets": 16818,
+      "visible_reference_packets": 434
+    },
+    "test": {
+      "raw_rows": 40980,
+      "eligible_reports": 23677,
+      "reference_packets": 22260,
+      "visible_reference_packets": 1417
+    },
+    "train": {
+      "raw_rows": 260231,
+      "eligible_reports": 39447,
+      "reference_packets": 39190,
+      "visible_reference_packets": 257
+    }
+  },
+  "raw_dates": [
+    "2019-03-03",
+    "2019-04-02",
+    "2020-05-02",
+    "2020-07-03",
+    "2020-08-03",
+    "2020-09-02"
+  ],
+  "time_gate_s": 0.003025170001565151,
+  "window_s": 60.0,
+  "test_dates": [
+    "2020-08-03",
+    "2020-09-02"
+  ],
+  "test_observation_rows": 23677,
+  "test_reference_positives": 1417,
+  "test_window_boundary_false_negatives_are_included": true,
+  "identity_fields_excluded_from_features": true,
+  "scoring_features": [
+    "corrected time residual",
+    "frequency mismatch",
+    "decoded SF mismatch"
+  ],
+  "limitation": "Two held-out capture days; logical-packet reference; no waveform uncertainty/geometry or protocol-classifier validation.",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "pandas": "3.0.1",
+  "script_sha256": "fc3ca6e8058afc2d75b3efd7730a815bd1f9c4b2d75f442104ea8ac7514ef5d6"
+}

@@ -1,0 +1,10 @@
+# Actual review execution environment: Python 3.12.14, Windows 11
+numpy==2.5.4
+scipy==1.17.0
+scikit-learn==1.8.0
+pandas==3.0.1
+matplotlib==3.11.2
+threadpoolctl==3.6.0
+PyMuPDF==1.26.7
+pypdf==6.10.0
+Pillow==12.3.0

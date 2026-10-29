@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "rows": 9600,
+  "independent_legacy_metric_checks": 240,
+  "maximum_difference_from_archived_metrics": 4.440892098500626e-16,
+  "seconds": 4.175566300000355
+}

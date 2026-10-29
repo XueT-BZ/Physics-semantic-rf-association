@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "existing_test_scenes": 800,
+  "performance_conditions": 3,
+  "performance_scene_conditions": 2400,
+  "reencoded_scenes_with_identical_partition": 800,
+  "max_reencoded_feature_difference": 0.0,
+  "max_reencoded_probability_difference": 0.0,
+  "receiver_specific_declared_class_permutations": true,
+  "unknown_mapping_learned": false,
+  "scorer_and_gate_frozen": true,
+  "new_scene_distributions_added": false,
+  "original_experiment_sha256": "cdec8de8c350e454e9cf450eebc5195dc7f807ff45f40a5b9503696e9d611af4",
+  "script_sha256": "dd4d006fa47383f09501048ea0d8dec9e2ff2592608d5b3cd9973145026e211b",
+  "scope": "Known representation mappings and their association consequences; not real protocol recognition or unknown ontology matching."
+}

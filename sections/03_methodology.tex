@@ -1,0 +1,204 @@
+\section{Methodology}
+Figure~\ref{fig:pipeline} shows how registry-based interpretation and physical--semantic scoring produce aligned records and event groups. Training and calibration are separate offline operations: scoring uses \emph{all cross-receiver training pairs}, whereas temperature fitting uses admitted calibration pairs only.
+
+\widefig{fig02_architecture}{Processing and fitted parameters. Solid arrows carry reports or evidence; dashed arrows supply frozen parameters. Scoring uses all training pairs, and temperature fitting uses admitted pairs from separate calibration scenes. The affinity sketch is illustrative. Rejected pairs do not enter decoding, which receives neither source coordinates nor event count. Figures~\ref{fig:gate} and~\ref{fig:decoder} detail admission and decoding; Supplementary Figures S3--S5 detail representation, evidence, and calibration.}{fig:pipeline}
+
+
+\subsection{Semantic alignment scope and observation contract}\label{sec:alignment_contract}
+Let $o_i^{\mathrm{nat}}$ denote the native report from source $s_i$. The declared registry $\mathcal A_s$ specifies field meanings, unit scales, class correspondences, and the source of each uncertainty declaration. Applying it gives a common observation record:
+\begin{equation}
+ \bar o_i=\mathcal A_{s_i}(o_i^{\mathrm{nat}}),\qquad
+ \mathcal Y=\{(\bar o_i,s_i,z_i):i=1,\ldots,N\},\label{eq:alignment_output}
+\end{equation}
+The comparable record $\bar o_i$ retains source identity, while $z_i$ denotes its inferred instance. A decision $z_i=z_j$ assigns one transmission without equating the receivers' measurements or class predictions.
+
+Field meanings, units, uncertainties, vocabulary size, and a reference map are supplied; disclosed anchors are assumed correct. Section~\ref{sec:partial_registry} infers selected missing permutations together with event groups. Many-to-one, hierarchical, and open-set maps are unsupported and rejected.
+
+\subsubsection{RF observation model}
+
+Consider $S$ receivers at known positions $\mathbf r_s\in\R^2$ (m), indexed by $s\in\{0,\ldots,S-1\}$. A window contains $N$ reports $i\in\{1,\ldots,N\}$. Event $e$ has hidden time $\tau_e$ (s), position $\mathbf x_e$ (m), carrier $f_e$ (Hz), bandwidth $B_e$ (Hz), duration $D_e$ (s), and family $q_e\in\{1,\ldots,K\}$. The number of visible events is unknown. A non-clutter report from $s_i$ follows
+\begin{align}
+ t_i&=\tau_e+\|\mathbf x_e-\mathbf r_{s_i}\|/c+b_{s_i}+\epsilon_i^t+m_i,\label{eq:time}\\
+ f_i&=f_e+d_{s_i}+\epsilon_i^f,\qquad
+ B_i=B_e+\epsilon_i^B,\qquad D_i=D_e+\epsilon_i^D.\label{eq:other}
+\end{align}
+We assume propagation speed $c=299{,}792{,}458\ \mathrm{m\,s^{-1}}$. Clock offset $b_s$ (s) and oscillator offset $d_s$ (Hz) are shared within a receiver's scene, without test-truth correction. The $\epsilon$ terms are independent, zero-mean measurement errors. Additional delay $m_i\geq0$ (s) is zero outside its stress test. Bandwidth and duration are clipped positive; the generator produces descriptors rather than waveforms.
+
+Receiver exclusivity requires consolidation to at most one report per transmission, with missed detections allowed. Independent clutter reports receive singleton labels; a common false interferer is not modeled. Inference uses receiver identities and positions, measurements, declared errors, native units, class maps, and probabilities. Event labels, source positions, and clutter flags remain evaluation-only.
+
+\subsection{Representation and class-semantic alignment}
+A native carrier value is $v_i$, and its unit is $u_i$. We convert it to the common unit as follows:
+\begin{equation}
+ f_i=\alpha(u_i)v_i,\qquad
+ \alpha(\mathrm{Hz})=1,\quad\alpha(\mathrm{kHz})=10^3,\quad\alpha(\mathrm{MHz})=10^6.\label{eq:units}
+\end{equation}
+Time and duration use seconds and bandwidth uses hertz, with declared property meanings. Matrix $M_s$ registers native columns: $(q,a)$ is one when column $a$ denotes common family $q$. Thus
+\begin{equation}
+ \pi_i=M_{s_i}\pi_i^{\mathrm{nat}},\qquad
+ \pi_i\in[0,1]^K,\quad\sum_q\pi_{iq}=1.\label{eq:class_mapping}
+\end{equation}
+Missing evidence is uniform. Mapping resolves column meanings but supplies no new evidence, unknown classes, or finer concepts. The generator uses cyclic permutations; the audit also tests arbitrary receiver-specific orders with matching registries. Supplementary Figure S3 illustrates units, class meanings, and provenance.
+
+\paragraph{Representation consistency.}
+For invertible re-encoding $R_s$, a matched registry $\mathcal A_s'=\mathcal A_s\circ R_s^{-1}$ gives $\mathcal A_s'(R_s o_i^{\mathrm{nat}})=\bar o_i$. Features, gate decisions, and deterministic partitions are then unchanged up to numerical precision.
+
+This establishes consistency under a known registry, not unknown-map recovery. A shared class renaming preserves inner products, while unmatched source-specific permutations generally change them.
+
+
+Declared measurement deviations are $\sigma_i^t>0$ and $\sigma_i^f>0$. Receiver offsets $\mathbf b=(b_0,\ldots,b_{S-1})^{\mathsf T}$ and $\mathbf d=(d_0,\ldots,d_{S-1})^{\mathsf T}$ have covariance matrices $\Sigma_b$ and $\Sigma_d$, in s$^2$ and Hz$^2$. With measurement errors independent of these offsets,
+\begin{align}
+ u_{t,ij}^2&=(\sigma_i^t)^2+(\sigma_j^t)^2 \notag\\
+ &\quad+[\Sigma_b]_{s_i,s_i}+[\Sigma_b]_{s_j,s_j}
+             -2[\Sigma_b]_{s_i,s_j},\label{eq:covariance}\\
+ u_{f,ij}^2&=(\sigma_i^f)^2+(\sigma_j^f)^2 \notag\\
+ &\quad+[\Sigma_d]_{s_i,s_i}+[\Sigma_d]_{s_j,s_j}
+             -2[\Sigma_d]_{s_i,s_j}.\label{eq:covfreq}
+\end{align}
+Entries $[\Sigma_b]_{s,t}=\operatorname{Cov}(b_s,b_t)$ and $[\Sigma_d]_{s,t}=\operatorname{Cov}(d_s,d_t)$ use row and column indices; each cross-covariance is subtracted twice.
+Positive square roots define $u_{t,ij}$ and $u_{f,ij}$. Nominal off-diagonal covariances vanish, but shared receivers still couple pairs. Correlation tests compare diagonal and matched declarations. Bandwidth and duration use $u_{B,ij}^2=(\sigma_i^B)^2+(\sigma_j^B)^2$ and $u_{D,ij}^2=(\sigma_i^D)^2+(\sigma_j^D)^2$. These are declared inputs, not estimates from held-out labels.
+
+\subsection{Physical admission and its conditional coverage}
+For reports from distinct receivers, set $\Delta t_{ij}=t_i-t_j$ and $\Delta f_{ij}=f_i-f_j$. The receiver distance gives the following delay bound:
+\begin{equation}
+ h_{ij}=\frac{\|\mathbf r_{s_i}-\mathbf r_{s_j}\|}{c},\qquad
+ \frac{\big|\|\mathbf x_e-\mathbf r_{s_i}\|-\|\mathbf x_e-\mathbf r_{s_j}\|\big|}{c}\leq h_{ij}.\label{eq:geometry}
+\end{equation}
+The reverse triangle inequality requires no source estimate and motivates the normalized residuals and gate:
+\begin{align}
+ z_{t,ij}&=\frac{\max(0,|\Delta t_{ij}|-h_{ij})}{u_{t,ij}},\qquad
+ z_{f,ij}=\frac{|\Delta f_{ij}|}{u_{f,ij}},\label{eq:residuals}\\
+ g_{ij}(k)&=\ind[z_{t,ij}\leq k]\ind[z_{f,ij}\leq k],\qquad k>0.\label{eq:gate}
+\end{align}
+The indicator $\mathbf{1}[A]$ equals one when $A$ holds and zero otherwise; $g_{ij}$ combines the two tests. Figure~\ref{fig:gate} shows uncertainty widening the delay interval. Time and frequency determine admission; bandwidth and duration enter scoring. Rejection means exceeding the declared tolerance, not physical impossibility.
+
+\widefig{fig04_gate}{Physical admission. (a) Path lengths $d_i=\|\mathbf x_e-\mathbf r_{s_i}\|$ and $d_j$ obey the receiver-baseline bound. (b) Uncertainty expands $[-h,h]$ to $[-h-ku_t,h+ku_t]$. (c) Both residuals must pass. Circles represent possible true pairs and the cross a false pair: either type can pass or fail. These are illustrations, not measurements.}{fig:gate}
+
+\begin{Proposition}[Conditional true-pair rejection bound]\label{prop:gate}
+Consider a same-event pair with $m_i=m_j=0$. Assume the pair's timing error is zero-mean Gaussian with the declared variance. Assume the same for its frequency error. Assume also that the source carrier follows Equation~\eqref{eq:other}. Then
+\begin{equation}
+ \Pr\{g_{ij}(k)=0\mid y_{ij}=1\}\leq4\Phi(-k),\label{eq:bound}
+\end{equation}
+where $y_{ij}=1$ denotes a true same-event pair and $\Phi$ is the standard-normal cumulative distribution function.
+\end{Proposition}
+Proof is given in Supplementary Section S10.
+The nominal $k=3.5$ gives Gaussian rejection bound $9.31\times10^{-4}$. This tail budget is invalidated by underestimated bias, mean offsets, or excess delay and is not a universal NLOS setting. Pairwise admission also does not establish a common source position.
+
+\subsection{Physical--semantic evidence for instance alignment}
+\paragraph{What the semantic variable represents.}
+The latent family is $q_e$; the reported belief in family $q$ is $\pi_{iq}$ for observation $i$. A deployed recognizer requires a documented vocabulary and method. Here $K=4$ anonymous labels $Q_1,\ldots,Q_4$ are generated with the descriptors, without waveform classification or assigned WiFi/LoRa protocol names.
+
+Vectors $(0.7,0.1,0.1,0.1)$ and $(0.6,0.2,0.1,0.1)$ favor the same family but can describe different transmissions. We assess whether such evidence helps association, rather than measuring protocol recognition.
+
+For a report pair, set $\Delta B_{ij}=B_i-B_j$ and $\Delta D_{ij}=D_i-D_j$. Supplementary Figure S4 shows the physical branch. It computes five features:
+\begin{equation}
+ \phi^{\mathrm{phys}}_{ij}=\log\!\left(1+
+ \left[\frac{|\Delta t_{ij}|}{u_{t,ij}},\ z_{t,ij},\ z_{f,ij},\
+ \frac{|\Delta B_{ij}|}{u_{B,ij}},\ \frac{|\Delta D_{ij}|}{u_{D,ij}}\right]\right),\label{eq:physical}
+\end{equation}
+The logarithm acts componentwise. The timing inputs distinguish total normalized delay from delay beyond the receiver-baseline allowance, allowing the scorer to discriminate among admitted pairs.
+
+The semantic branch uses compatibility $v_{ij}$ and concentration $r_i$:
+\begin{align}
+ v_{ij}&=\log\!\left(\max\{K\pi_i^{\mathsf T}\pi_j,\epsilon\}\right),\qquad
+ H(\pi_i)=-\sum_{q=1}^{K}\pi_{iq}\log\pi_{iq},\label{eq:sem}\\
+ r_i&=1-\frac{H(\pi_i)}{\log K},\qquad
+ \phi^{\mathrm{sem}}_{ij}=r_i r_j v_{ij}.\label{eq:entropy}
+\end{align}
+We use floor $\epsilon=10^{-12}$ and convention $0\log0=0$. Factor $K$ makes uniform evidence neutral. Concentration $r_i\in[0,1]$ downweights diffuse vectors in Equation~\eqref{eq:entropy}, but can amplify confidently wrong evidence. The unweighted variant uses $v_{ij}$ directly and is the default linear option based on the initial nominal ablation. New comparisons retain every scorer without test-based selection; entropy weighting remains optional, with no established reliability advantage.
+
+
+The feature vector is $\phi_{ij}=[\phi^{\mathrm{phys}}_{ij},\phi^{\mathrm{sem}}_{ij}]\in\R^6$, with each model's stated semantic input. Training means $\mu$ and scales $\sigma$ give $\widetilde\phi=(\phi-\mu)/\sigma$; zero-variance components receive scale one. The linear logit is
+\begin{equation}
+ \ell_{ij}=\beta_0+\beta^{\mathsf T}\widetilde\phi_{ij}.
+ \label{eq:logit}
+\end{equation}
+\begin{equation}
+ \begin{split}
+ (\beta_0,\beta)=\argmin_{\beta_0,\beta}\Bigg\{
+ &\sum_{(i,j)\in\mathcal T}
+ \big[\log(1+e^{\ell_{ij}})-y_{ij}\ell_{ij}\big]\\
+ &+\frac{\|\beta\|_2^2}{2C_{\rm reg}}\Bigg\}.
+ \end{split}\label{eq:logistic}
+\end{equation}
+Training uses all labeled cross-receiver pairs $\mathcal T$, $C_{\rm reg}=1$, an unpenalized intercept, and no balancing or negative downsampling. Restricted models use fewer inputs. Histogram boosting uses five physical inputs and weighted semantics \cite{sklearn}. All three joint scorers share mapping and decoding rules, with weighted linear results retained as the historical reference.
+
+\subsection{Calibration and the interpretation of signed evidence}
+We freeze the scaler and scorer first. We then fit the temperature on admitted pairs $\mathcal V_g$ from independent calibration scenes:
+\begin{equation}
+ T^*=\argmin_{T\in[0.1,10]}
+ \sum_{(i,j)\in\mathcal V_g}[\log(1+e^{\ell_{ij}/T})-y_{ij}\ell_{ij}/T].\label{eq:temperature}
+\end{equation}
+The calibrated score is $p^{\rm cal}_{ij}=\sigmoid(\ell_{ij}/T^*)$, where $\sigmoid(x)=1/(1+e^{-x})$, and the reported score is $\widehat p_{ij}=g_{ij}p^{\rm cal}_{ij}$. Gaussian-tail true pairs can receive forced zeros, so the gated score is not a calibrated posterior. NLL clips probabilities to $[\epsilon,1-\epsilon]$ for finite loss; Brier error uses the reported values.
+
+
+For decoding, use finite pre-gate signed weights
+\begin{equation}
+ w_{ij}=\logit(p^{\rm cal}_{ij})=\ell_{ij}/T^*,\qquad
+ \logit(p)=\log\frac{p}{1-p}.\label{eq:weights}
+\end{equation}
+Clipping $p^{\rm cal}$ makes equality to $\ell/T^*$ an unsaturated rule. Rejected pairs fail feasibility without taking the logit of zero. All positive and negative weights enter the group score.
+
+\begin{Proposition}[Temperature invariance]\label{prop:temperature}
+Fix the gates and use unsaturated logits. Break ties deterministically and use a zero merge cutoff. Make pair decisions at $0.5$. Under these conditions, any common $T>0$ preserves pair rankings and signs. It also preserves the greedy merge sequence defined below.
+\end{Proposition}
+Proof is given in Supplementary Section S10.
+Clipping, nonzero cutoffs, or different pair thresholds can break invariance. The executable cutoff is $10^{-10}$, so nominal before/after partitions are checked separately.
+
+\subsection{Constrained event partitions and greedy inference}
+\paragraph{Operational meaning of consistency.}
+Membership forms an equivalence relation with receiver exclusivity and complete admission under Equation~\eqref{eq:gate}. No score overrides these hard requirements. The feature in Equations~\eqref{eq:sem}--\eqref{eq:entropy} instead supplies signed soft evidence, without identical-label or semantic-threshold requirements.
+
+Joining admitted $a$--$b$ and $b$--$c$ also asserts $a$--$c$, which must pass. Indirect links cannot repeat a receiver. These checks enforce the contract without certifying event identities or a common source position.
+
+Let $\mathcal C=\{C_1,\ldots,C_M\}$ partition all $N$ observations. The cluster count $M$ is unknown. Predicted co-membership is $a_{ij}=\ind[i,j\text{ belong to the same }C]$. It must be an equivalence relation and meet the following rules:
+\begin{equation}
+ \sum_{i\in C}\ind[s_i=s]\leq1\quad\forall C\in\mathcal C,\ s,
+ \qquad a_{ij}=1\ \Longrightarrow\ g_{ij}=1\quad(s_i\ne s_j).\label{eq:receiver}
+\end{equation}
+The constraints enforce exclusivity and complete cross-pair admission. We maximize
+\begin{equation}
+ J(\mathcal C)=\sum_{C\in\mathcal C}\sum_{\substack{i<j\\i,j\in C}}w_{ij}.\label{eq:objective}
+\end{equation}
+Singletons contribute zero. Bernoulli pair factors yield this sum after partition-constant terms are removed, but receiver errors and transitivity couple the factors. Hence $J$ is a composite agreement score, not a joint posterior.
+
+For disjoint current clusters $A,B$, write $\mathcal S(A)=\{s_i:i\in A\}$. Define
+\begin{align}
+ F(A,B)&=\ind[\mathcal S(A)\cap\mathcal S(B)=\varnothing]
+              \prod_{i\in A,j\in B}g_{ij},\label{eq:feasible}\\
+ \Delta(A,B)&=\sum_{i\in A,j\in B}w_{ij},\label{eq:gain}\\
+ \Delta(A\cup B,C)&=\Delta(A,C)+\Delta(B,C),\qquad
+ F(A\cup B,C)=F(A,C)\wedge F(B,C).\label{eq:update}
+\end{align}
+Here $F$ denotes feasibility and $\wedge$ logical AND. Negative cross edges offset positive support in each gain. Figure~\ref{fig:decoder} illustrates an early merge that greedy inference cannot undo.
+
+\widefig{fig07_decoder}{A greedy optimization limit. (a) Positive gains require receiver and all-pair admission checks. (b) Four distinct receivers have all gates admitted, with $w_{12}=5$, $w_{13}=w_{24}=4$, and other weights $-10$. (c) Greedy joins $\{1,2\}$ and stops at $J=5$. (d) The optimum $\{1,3\},\{2,4\}$ has $J=8$. The supplied invariant test verifies this constructed example; it is not an empirical scene.}{fig:decoder}
+
+\begin{psalgorithm}[!t]\caption{Receiver-exclusive, all-pairs-admissible greedy association}\label{alg:greedy}
+\begin{minipage}{\linewidth}\small
+\textbf{Input:} common observations, declared uncertainty, fitted scaler/scorer, $T$, and $k$.\\
+\textbf{Output:} a partition of all observations, including singletons.
+\begin{enumerate}[label=\arabic*.,leftmargin=1.6em,itemsep=2pt]
+\item Form cross-receiver features, gate values $g_{ij}$, and finite pre-gate weights $w_{ij}$.
+\item Initialize singleton clusters and their dense gain and feasibility arrays.
+\item Select a feasible pair $(A,B)$ with maximal $\Delta(A,B)$. Stop if no gain exceeds $10^{-10}$.
+\item Replace $A,B$ by $A\cup B$; update gains and feasibility with Equation~\eqref{eq:update}.
+\item Repeat Steps 3--4 and return the remaining clusters.
+\end{enumerate}\end{minipage}
+\end{psalgorithm}
+
+\begin{Proposition}[Feasibility, ascent, and termination]\label{prop:greedy}
+Algorithm~\ref{alg:greedy} returns a receiver-exclusive, all-pairs-admissible partition. Each accepted merge raises $J$. There are at most $N-1$ merges. Dense comparisons take $O(N^3)$ work. Storage takes $O(N^2)$.
+\end{Proposition}
+Proof is given in Supplementary Section S10.
+Termination excludes further positive-gain merges but proves neither global optimality nor correct identity. Exact audits maximize $\sum_{i<j}w_{ij}a_{ij}$ over binary $a_{ij}$, fixing $a_{ij}=0$ for same-receiver or rejected pairs. For distinct $i,j,\nu$, transitivity requires
+\begin{equation}
+ \begin{aligned}
+ a_{ij}+a_{j\nu}-a_{i\nu}&\leq1,\\
+ a_{ij}+a_{i\nu}-a_{j\nu}&\leq1,\\
+ a_{i\nu}+a_{j\nu}-a_{ij}&\leq1.
+ \end{aligned}\label{eq:triangle}
+\end{equation}
+If $i$ joins $j$ with $a_{ij}=1$ and $j$ joins $\nu$ with $a_{j\nu}=1$, the first inequality requires $a_{i\nu}=1$.
+The MILP has $\binom N2$ variables and $3\binom N3$ inequalities. SciPy/HiGHS must prove optimality at requested gap zero; time-limited incumbents are not called exact \cite{scipy}. A restart heuristic retains greedy decoding and tries up to eight alternative first merges among the strongest positive feasible edges. Each run uses Algorithm~\ref{alg:greedy}, retaining the best objective. With $L$ alternatives, work is $O((L+1)N^3)$ and storage $O(N^2)$, without approximation or accuracy guarantees.
+\input{sections/03a_partial_mapping}
+\FloatBarrier

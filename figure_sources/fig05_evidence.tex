@@ -1,0 +1,100 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{helvet,amsmath,amssymb,fix-cm}
+\renewcommand{\familydefault}{\sfdefault}
+\usetikzlibrary{arrows.meta,calc,positioning,fit,backgrounds,decorations.pathreplacing,shapes.geometric}
+\definecolor{ink}{HTML}{243343}
+\definecolor{physical}{HTML}{3478A3}
+\definecolor{semantic}{HTML}{B27C26}
+\definecolor{feasible}{HTML}{248679}
+\definecolor{decode}{HTML}{75609D}
+\definecolor{fault}{HTML}{BA5554}
+\definecolor{muted}{HTML}{6F7D88}
+\tikzset{
+  every node/.style={font=\fontsize{9}{10.8}\selectfont,text=ink},
+  edge/.style={-{Stealth[length=1.8mm,width=1.25mm]},line width=.6pt,draw=ink},
+  param/.style={-{Stealth[length=1.7mm]},line width=.6pt,draw=decode,dashed},
+  link/.style={line width=.8pt,draw=physical},
+  reject/.style={line width=.7pt,draw=fault,dashed},
+  panel/.style={rounded corners=2pt,draw=muted!45,line width=.45pt,fill=white},
+  box/.style={rounded corners=2pt,draw=physical!70,line width=.55pt,fill=physical!6,align=center,inner sep=3pt},
+  sem/.style={box,draw=semantic!70,fill=semantic!8},
+  gate/.style={box,draw=feasible!70,fill=feasible!7},
+  dec/.style={box,draw=decode!70,fill=decode!7},
+  tinylabel/.style={font=\fontsize{8}{9.4}\selectfont},
+  smalllabel/.style={font=\fontsize{8.5}{10}\selectfont},
+  heading/.style={font=\bfseries\fontsize{10}{11.5}\selectfont,anchor=north west},
+  dot/.style={circle,minimum size=.43cm,inner sep=0pt,draw=physical,fill=white,line width=.8pt,font=\bfseries\fontsize{9}{10}\selectfont},
+  receiver/.pic={\draw[draw=physical,line width=.8pt] (0,0)--(0,.58) (-.17,0)--(.17,0) (-.15,.39)--(0,.58)--(.15,.39);
+    \draw[draw=physical!70,line width=.55pt] (-.2,.56) arc[start angle=160,end angle=200,radius=.23];
+    \draw[draw=physical!70,line width=.55pt] (.2,.40) arc[start angle=-20,end angle=20,radius=.23];},
+}
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[panel] (0,0) rectangle ++(18.15,6.4);
+\node[heading] at (0.17,6.25) {Physical and semantic evidence construction};
+
+\draw[panel,fill=physical!3] (.25,1.13) rectangle (8.15,5.77);
+\draw[panel,fill=semantic!3] (8.53,1.13) rectangle (17.90,5.77);
+\node[heading] at (.42,5.59) {(a) Five physical features};
+\node[heading] at (8.70,5.59) {(b) Protocol compatibility};
+\node[box,text width=1.97cm,minimum height=1.00cm] (reports) at (1.54,3.57)
+ {Two canonical\\reports $o_i,o_j$};
+\foreach \yy/\sym/\txt in {4.79/{|\Delta t|/u_t}/{arrival time},3.98/{z_t}/{excess delay},3.17/{z_f}/{carrier},2.36/{|\Delta B|/u_B}/{bandwidth},1.55/{|\Delta D|/u_D}/{duration}} {
+  \node[box,text width=2.55cm,minimum height=.52cm] at (4.28,\yy) {$\sym$};
+  \node[tinylabel,anchor=west,text width=1.72cm] at (5.83,\yy) {\txt};
+}
+\draw[edge] (reports.east)--(2.69,3.57)--(2.69,4.79)--(2.86,4.79);
+\draw[edge] (2.69,3.57)--(2.69,3.98)--(2.86,3.98);
+\draw[edge] (2.69,3.57)--(2.69,3.17)--(2.86,3.17);
+\draw[edge] (2.69,3.17)--(2.69,2.36)--(2.86,2.36);
+\draw[edge] (2.69,2.36)--(2.69,1.55)--(2.86,1.55);
+\node[tinylabel,text=muted,anchor=north] at (1.54,2.89) {declared s.d.s};
+\node[tinylabel,text=physical,anchor=south] at (6.57,5.04) {$\log(1+\cdot)$};
+\node[smalllabel,anchor=west] at (8.89,4.94) {$\pi_i$};
+\node[smalllabel,anchor=west] at (12.0,4.94) {$\pi_j$};
+\fill[semantic!12] (9.13,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (9.13,3.65) rectangle ++(0.39,0.84);
+\node[tinylabel,anchor=north] at (9.325000000000001,3.61) {1};
+\fill[semantic!12] (9.700000000000001,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (9.700000000000001,3.65) rectangle ++(0.39,0.12);
+\node[tinylabel,anchor=north] at (9.895000000000001,3.61) {2};
+\fill[semantic!12] (10.270000000000001,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (10.270000000000001,3.65) rectangle ++(0.39,0.12);
+\node[tinylabel,anchor=north] at (10.465000000000002,3.61) {3};
+\fill[semantic!12] (10.84,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (10.84,3.65) rectangle ++(0.39,0.12);
+\node[tinylabel,anchor=north] at (11.035,3.61) {4};
+\fill[semantic!12] (12.27,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (12.27,3.65) rectangle ++(0.39,0.72);
+\node[tinylabel,anchor=north] at (12.465,3.61) {1};
+\fill[semantic!12] (12.84,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (12.84,3.65) rectangle ++(0.39,0.24);
+\node[tinylabel,anchor=north] at (13.035,3.61) {2};
+\fill[semantic!12] (13.41,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (13.41,3.65) rectangle ++(0.39,0.12);
+\node[tinylabel,anchor=north] at (13.605,3.61) {3};
+\fill[semantic!12] (13.98,3.65) rectangle ++(0.39,1.2);
+\fill[semantic!70] (13.98,3.65) rectangle ++(0.39,0.12);
+\node[tinylabel,anchor=north] at (14.175,3.61) {4};
+
+\node[smalllabel,align=left,anchor=west,text width=2.32cm] at (15.00,4.22)
+ {Common class order\\$q=1,\ldots,K$\\$\sum_q\pi_{iq}=1$};
+\node[sem,text width=3.33cm,minimum height=.71cm] (dot) at (10.57,2.64)
+ {$v_{ij}=\log(K\pi_i^{\mathsf T}\pi_j)$};
+\node[sem,text width=3.65cm,minimum height=.71cm] (conc) at (15.11,2.64)
+ {Concentrations $r_i,r_j$\\$r_i=1-H(\pi_i)/\log K$};
+\draw[semantic,line width=.6pt] (10.08,3.30)--(10.08,3.15)--(15.11,3.15);
+\draw[semantic,line width=.6pt] (13.2,3.30)--(13.2,3.15);
+\fill[semantic] (13.2,3.15) circle (.025);
+\fill[semantic] (10.57,3.15) circle (.025);
+\draw[edge,semantic] (10.57,3.15)--(dot.north);
+\draw[edge,semantic] (15.11,3.15)--(conc.north);
+\node[sem,text width=7.55cm,minimum height=.50cm] (weighted) at (13.20,1.57)
+ {$\phi^{\mathrm{sem}}_{ij}=r_i r_j v_{ij}$\qquad uniform input $\Rightarrow 0$};
+\draw[edge,semantic] (dot.south)--(10.57,2.03)-|(weighted.north);
+\draw[edge,semantic] (conc.south)--(15.11,2.03)-|(weighted.north);
+\node[dec,text width=16.80cm,minimum height=.56cm] at (9.08,.49)
+ {Concatenate $[\phi^{\mathrm{phys}}_{ij},\phi^{\mathrm{sem}}_{ij}]\in\mathbb R^6$\quad$\longrightarrow$\quad train-only standardization\quad$\longrightarrow$\quad fitted logit $\ell_{ij}$};
+\end{tikzpicture}
+\end{document}

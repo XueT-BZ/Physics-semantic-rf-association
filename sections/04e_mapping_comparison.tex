@@ -1,0 +1,17 @@
+\subsection{Independent comparison of missing-map estimators}\label{sec:deep_mapping}
+Independent validation uses 400 adaptation and 800 test scenes, with ten replications of 40 and 80 scenes. Prefix budgets are 1, 5, and 40. Receiver 0 remains known; three unanchored four-class maps are hidden. All solvers share physical-only groups and frozen parameters. Reconstructing the boosted model from original training with its saved temperature reproduces all 800 partitions, with maximum probability difference below $4.5\times10^{-11}$.
+
+Reference-only fitting uses receiver 0, while coordinates update one map at a time. Adapted spectral synchronization \cite{pachauri2013} selects pairwise relative maps, then uses a leading eigenspace and Hungarian rounding. Spectral-plus-coordinate refines the full RF objective. Exact fitting retains all pair-table scores; sequential fitting solves once, whereas alternation also proposes groups. All maps freeze before testing (Supplementary Section S15).
+
+Five adaptation scenes give exact recovery of all 120 hidden entries for every scorer. Weighted, unweighted, and boosted F1 are 0.7786, 0.7997, and 0.8232, matching known-map references. These 120 entries belong to ten interventions, not 120 independent trials (Table~\ref{tab:deep_mapping}).
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Missing-map estimators using five adaptation and 80 test scenes per replication. Three four-class maps are unknown; only the reference is known. Counts sum ten interventions; F1 intervals use ten replication means. Sequential exact, alternating exact, and known-map results coincide. All outputs satisfy receiver and gate constraints.}\label{tab:deep_mapping}
+\small\setlength{\tabcolsep}{4pt}\input{tables/deep_mapping_methods}
+\end{adjustwidth}\end{table}
+
+Exact-minus-spectral F1 is 0.0073 for weighted scoring with interval $[-0.0093,0.0239]$, and 0.0099 for boosting with $[-0.0125,0.0322]$. Unweighted results coincide, so no general superiority is established. At 40 scenes, reference-only, spectral, and exact fitting recover all maps, while coordinates can stall. Sequential and alternating maps coincide in all 90 scorer--budget--replication settings.
+
+Two same-class conditions hide maps using five adaptation and 40 test scenes per replication. Exact fitting recovers every entry, yet at copy probability 0.65 the scorers give F1 0.4450, 0.4504, and 0.4537, equal to known-map references. Correct registration cannot distinguish nearby same-family events; the next test supplies all maps to isolate this ambiguity.
+
+A five-scene weighted case has 160 grouped pairs and 13,824 states. Cached enumeration takes 2.44 ms versus 1413.08 ms for full reevaluation, with identical optima in three-run medians. A six-class, two-unknown kernel has 518,400 states, taking 377.79 ms for tables and 1.76 ms for search. These timings do not establish larger-vocabulary recovery; Supplementary Section S15 gives memory and allocation limits.

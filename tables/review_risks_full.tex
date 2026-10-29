@@ -1,0 +1,62 @@
+\small\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{3.8cm}llrrrrrr@{}}
+\caption{All assumption-test accuracy and feasibility metrics. Rx and Gate are violation percentages.}\label{tab:all_risk_metrics}\\
+\toprule Intervention & Scorer & Decoder & F1 & ARI & $B^3$ F1 & Exact & Rx & Gate\\\midrule\endfirsthead
+\toprule Intervention & Scorer & Decoder & F1 & ARI & $B^3$ F1 & Exact & Rx & Gate\\\midrule\endhead
+\bottomrule\endfoot
+Correlated false alarms & Joint & Assign. & 0.5341 & 0.5140 & 0.7769 & 0.4802 & 21.6\% & 0.0\% \\
+Correlated false alarms & Joint & CC & 0.4366 & 0.4093 & 0.7254 & 0.3811 & 38.3\% & 0.6\% \\
+Correlated false alarms & Joint & Constr. & 0.6023 & 0.5893 & 0.7927 & 0.4577 & 0.0\% & 0.0\% \\
+Correlated false alarms & Phys. & Assign. & 0.4975 & 0.4758 & 0.7527 & 0.4021 & 24.1\% & 0.2\% \\
+Correlated false alarms & Phys. & CC & 0.4327 & 0.4053 & 0.7220 & 0.3521 & 39.3\% & 0.4\% \\
+Correlated false alarms & Phys. & Constr. & 0.5342 & 0.5193 & 0.7610 & 0.3580 & 0.0\% & 0.0\% \\
+Fragmented reports & Joint & Assign. & 0.6938 & 0.6765 & 0.8249 & 0.3748 & 22.7\% & 0.0\% \\
+Fragmented reports & Joint & CC & 0.7081 & 0.6867 & 0.8566 & 0.4880 & 60.9\% & 0.5\% \\
+Fragmented reports & Joint & Constr. & 0.6009 & 0.5860 & 0.7580 & 0.2458 & 0.0\% & 0.0\% \\
+Fragmented reports & Phys. & Assign. & 0.6416 & 0.6215 & 0.7951 & 0.3068 & 22.1\% & 0.2\% \\
+Fragmented reports & Phys. & CC & 0.6949 & 0.6727 & 0.8472 & 0.4480 & 60.6\% & 0.3\% \\
+Fragmented reports & Phys. & Constr. & 0.5325 & 0.5157 & 0.7177 & 0.1956 & 0.0\% & 0.0\% \\
+Independent false alarms; same count & Joint & Assign. & 0.5307 & 0.5121 & 0.7539 & 0.2568 & 25.5\% & 0.1\% \\
+Independent false alarms; same count & Joint & CC & 0.4701 & 0.4449 & 0.7129 & 0.1934 & 58.1\% & 0.5\% \\
+Independent false alarms; same count & Joint & Constr. & 0.5105 & 0.4959 & 0.7463 & 0.2413 & 0.0\% & 0.0\% \\
+Independent false alarms; same count & Phys. & Assign. & 0.4954 & 0.4753 & 0.7354 & 0.2191 & 25.1\% & 0.1\% \\
+Independent false alarms; same count & Phys. & CC & 0.4668 & 0.4416 & 0.7112 & 0.1801 & 57.2\% & 0.4\% \\
+Independent false alarms; same count & Phys. & Constr. & 0.4518 & 0.4359 & 0.7209 & 0.1871 & 0.0\% & 0.0\% \\
+Negative corr.; diagonal declaration & Joint & Assign. & 0.7854 & 0.7732 & 0.8918 & 0.5987 & 9.4\% & 0.1\% \\
+Negative corr.; diagonal declaration & Joint & CC & 0.6887 & 0.6684 & 0.8580 & 0.4898 & 21.1\% & 0.5\% \\
+Negative corr.; diagonal declaration & Joint & Constr. & 0.7796 & 0.7703 & 0.8673 & 0.5281 & 0.0\% & 0.0\% \\
+Negative corr.; diagonal declaration & Phys. & Assign. & 0.7273 & 0.7120 & 0.8579 & 0.4994 & 11.8\% & 0.3\% \\
+Negative corr.; diagonal declaration & Phys. & CC & 0.6749 & 0.6537 & 0.8488 & 0.4468 & 21.8\% & 0.7\% \\
+Negative corr.; diagonal declaration & Phys. & Constr. & 0.6910 & 0.6784 & 0.8177 & 0.4068 & 0.0\% & 0.0\% \\
+Negative corr.; matched covariance & Joint & Assign. & 0.7854 & 0.7732 & 0.8918 & 0.5987 & 9.4\% & 0.1\% \\
+Negative corr.; matched covariance & Joint & CC & 0.6887 & 0.6684 & 0.8580 & 0.4898 & 21.1\% & 0.5\% \\
+Negative corr.; matched covariance & Joint & Constr. & 0.7798 & 0.7705 & 0.8673 & 0.5284 & 0.0\% & 0.0\% \\
+Negative corr.; matched covariance & Phys. & Assign. & 0.7275 & 0.7122 & 0.8579 & 0.4986 & 11.8\% & 0.3\% \\
+Negative corr.; matched covariance & Phys. & CC & 0.6751 & 0.6539 & 0.8489 & 0.4461 & 21.8\% & 0.7\% \\
+Negative corr.; matched covariance & Phys. & Constr. & 0.6908 & 0.6782 & 0.8175 & 0.4061 & 0.0\% & 0.0\% \\
+Extra positive delay & Joint & Assign. & 0.7381 & 0.7242 & 0.8630 & 0.4930 & 9.6\% & 1.2\% \\
+Extra positive delay & Joint & CC & 0.6596 & 0.6383 & 0.8391 & 0.4109 & 20.7\% & 1.8\% \\
+Extra positive delay & Joint & Constr. & 0.7122 & 0.7011 & 0.8309 & 0.4103 & 0.0\% & 0.0\% \\
+Extra positive delay & Phys. & Assign. & 0.6863 & 0.6696 & 0.8339 & 0.4134 & 11.6\% & 1.1\% \\
+Extra positive delay & Phys. & CC & 0.6441 & 0.6220 & 0.8291 & 0.3681 & 22.4\% & 1.5\% \\
+Extra positive delay & Phys. & Constr. & 0.6188 & 0.6049 & 0.7807 & 0.3027 & 0.0\% & 0.0\% \\
+Nominal subset & Joint & Assign. & 0.7885 & 0.7765 & 0.8931 & 0.6031 & 9.1\% & 0.0\% \\
+Nominal subset & Joint & CC & 0.6898 & 0.6696 & 0.8584 & 0.4909 & 21.2\% & 0.5\% \\
+Nominal subset & Joint & Constr. & 0.7822 & 0.7730 & 0.8684 & 0.5297 & 0.0\% & 0.0\% \\
+Nominal subset & Phys. & Assign. & 0.7290 & 0.7137 & 0.8587 & 0.5055 & 11.6\% & 0.2\% \\
+Nominal subset & Phys. & CC & 0.6779 & 0.6569 & 0.8503 & 0.4518 & 21.8\% & 0.3\% \\
+Nominal subset & Phys. & Constr. & 0.6945 & 0.6820 & 0.8194 & 0.4112 & 0.0\% & 0.0\% \\
+Positive corr.; diagonal declaration & Joint & Assign. & 0.7883 & 0.7762 & 0.8930 & 0.6032 & 9.2\% & 0.0\% \\
+Positive corr.; diagonal declaration & Joint & CC & 0.6895 & 0.6692 & 0.8584 & 0.4924 & 21.0\% & 0.5\% \\
+Positive corr.; diagonal declaration & Joint & Constr. & 0.7816 & 0.7724 & 0.8682 & 0.5304 & 0.0\% & 0.0\% \\
+Positive corr.; diagonal declaration & Phys. & Assign. & 0.7298 & 0.7145 & 0.8588 & 0.5040 & 12.0\% & 0.2\% \\
+Positive corr.; diagonal declaration & Phys. & CC & 0.6778 & 0.6568 & 0.8502 & 0.4519 & 21.8\% & 0.4\% \\
+Positive corr.; diagonal declaration & Phys. & Constr. & 0.6946 & 0.6821 & 0.8194 & 0.4104 & 0.0\% & 0.0\% \\
+Positive corr.; matched covariance & Joint & Assign. & 0.7883 & 0.7762 & 0.8933 & 0.6036 & 9.2\% & 0.1\% \\
+Positive corr.; matched covariance & Joint & CC & 0.6895 & 0.6692 & 0.8583 & 0.4921 & 21.1\% & 0.5\% \\
+Positive corr.; matched covariance & Joint & Constr. & 0.7823 & 0.7731 & 0.8686 & 0.5319 & 0.0\% & 0.0\% \\
+Positive corr.; matched covariance & Phys. & Assign. & 0.7304 & 0.7151 & 0.8592 & 0.5058 & 12.0\% & 0.3\% \\
+Positive corr.; matched covariance & Phys. & CC & 0.6778 & 0.6568 & 0.8504 & 0.4536 & 21.8\% & 0.5\% \\
+Positive corr.; matched covariance & Phys. & Constr. & 0.6967 & 0.6843 & 0.8205 & 0.4152 & 0.0\% & 0.0\% \\
+\end{longtable}
+\normalsize

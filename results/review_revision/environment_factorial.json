@@ -1,0 +1,13 @@
+{
+  "task": "factorial",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+  "numpy": "2.5.4",
+  "pandas": "3.0.1",
+  "scipy": "1.17.0",
+  "scikit_learn": "1.8.0",
+  "matplotlib": "3.11.2",
+  "numerical_threads": 1,
+  "original_generator_sha256": "cdec8de8c350e454e9cf450eebc5195dc7f807ff45f40a5b9503696e9d611af4"
+}

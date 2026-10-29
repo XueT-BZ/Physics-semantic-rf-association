@@ -1,0 +1,19 @@
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Optional missing-map test with the original scores and decoder. Controlled results average ten repetitions. Public results use one later test capture. Mapping accuracy counts only hidden entries. Controlled rows use event-pair F1. Public rows use reference-packet F1.}\label{tab:partial_probe}
+\small\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\linewidth}{@{}lYrr@{}}\toprule
+Probe / adaptation & Method & Map (\%) & Pair F1\\\midrule
+Controlled / 1 scene & Unresolved completion & 33.3 & 0.7026\\
+Controlled / 1 scene & Sequential map fit & 86.7 & 0.7639\\
+Controlled / 1 scene & Map--event feedback & 86.7 & 0.7639\\
+Controlled / 40 scenes & Sequential map fit & 100.0 & 0.7798\\
+Controlled / 40 scenes & Map--event feedback & 100.0 & 0.7798\\
+Controlled / 40 scenes & Complete-map reference & 100.0 & 0.7798\\
+\midrule
+Public / 1 capture & Unresolved completion & 0.0 & 0.1270\\
+Public / 1 capture & Sequential map fit & 100.0 & 0.9961\\
+Public / 1 capture & Map--event feedback & 100.0 & 0.9961\\
+Public / 1 capture & Complete-map reference & 100.0 & 0.9961\\
+\bottomrule\end{tabularx}
+\par\vspace{3pt}\footnotesize The controlled test hides three entries at one receiver. The public test hides only SF7/SF12 at one gateway. Five-scene controlled adaptation also reaches 100\% and F1 0.7798. The public test has 8423 reports. The original public study pools 23,677 reports. Feedback does not improve on sequential fitting.
+\end{adjustwidth}\end{table}

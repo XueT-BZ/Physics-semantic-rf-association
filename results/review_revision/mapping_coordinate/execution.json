@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "seconds": 29.309325700000045,
+  "wrong_map_rows": 14400,
+  "completion_rows": 86400,
+  "schema_checks": 40
+}

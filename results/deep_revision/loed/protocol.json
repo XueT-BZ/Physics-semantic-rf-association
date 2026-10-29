@@ -1,0 +1,29 @@
+{
+  "analysis": "Secondary audit; no test-driven parameter choice or reference change",
+  "inputs": "Unchanged publisher sample and unchanged original inclusion rules",
+  "original_code_changed": false,
+  "clock_observables": [
+    "day",
+    "gateway",
+    "time_s",
+    "frequency",
+    "spreading_factor"
+  ],
+  "clock_fit_split": "training only",
+  "lag_search_s": [
+    -5.0,
+    5.0
+  ],
+  "bin_width_s": 0.001,
+  "refinement_radius_s": 0.005,
+  "minimum_peak_bin_count": 10,
+  "minimum_refined_support": 20,
+  "peak_to_99percent_histogram_count": 5.0,
+  "peak_to_distant_peak": 2.0,
+  "distant_peak_exclusion_s": 0.01,
+  "gate": "Original calibration-reference 0.99 quantile with 1 ms floor",
+  "scorer": "Original supervised three-feature logistic regression and temperature fit",
+  "qualification": "Only clock-offset fitting is reference-free; filtering, scorer labels, gate calibration and evaluation remain reference-assisted",
+  "test_population": "Unchanged 23677 reports; all ambiguous reference pairs remain",
+  "tail_diagnostic_threshold_s": 0.01
+}

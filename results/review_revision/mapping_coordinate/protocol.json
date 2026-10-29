@@ -1,0 +1,37 @@
+{
+  "replications": 10,
+  "test_scenes_per_replication": 80,
+  "adaptation_budgets": [
+    1,
+    5,
+    40
+  ],
+  "unknown_receivers": [
+    1,
+    2,
+    3
+  ],
+  "anchors_per_unknown_source": [
+    0,
+    1,
+    2
+  ],
+  "wrong_entries": [
+    0,
+    2,
+    4,
+    8,
+    12,
+    16
+  ],
+  "mapping_interventions_per_replication": 3,
+  "adaptation_seed_base": 80000000,
+  "adaptation_scenes_are_disjoint_from_historical_training_and_temperature_calibration": true,
+  "original_test_scenes_reused": true,
+  "post_review_secondary_audit": true,
+  "fitted_classifiers_refit": false,
+  "maximum_map_cycles": 10,
+  "maximum_feedback_sweeps": 10,
+  "known_reference_receiver": 0,
+  "unsupported_vocabularies": "reject; no score is reported"
+}

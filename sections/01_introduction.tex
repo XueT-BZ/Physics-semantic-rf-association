@@ -1,0 +1,22 @@
+\section{Introduction}
+A signal-reconnaissance system combines reports of detected activity from several RF receivers. A recognizer may also supply probabilities over signal families \cite{syed2023,zhang2022amc,tian2026}. Differences in units, class orders, and measurement errors create multi-source heterogeneity. All sources in this study are RF receivers.
+
+Here, \emph{semantic evidence} is probability compatibility after class columns have been mapped to common meanings; it does not refer to natural-language interpretation or decoded message content. For example, column 1 can denote different families at two receivers, so comparing those columns directly can produce false agreement. Correct mapping makes the probabilities comparable, but separate transmissions can still share a family. Event identity therefore requires a further inference step.
+
+We distinguish three alignment levels. Representation alignment converts values and uncertainties to common units. Class-semantic alignment registers native probability columns to a shared signal-family vocabulary. Instance alignment groups reports of one bounded transmission. The title's \emph{consistency} refers to the resulting groups: membership is transitive, each receiver appears at most once per group, and every pair passes the physical gate. These requirements enforce the input contract without certifying event identity.
+
+\widefig{fig01_task}{The alignment task. Native units and class orders differ across RF receivers. Hidden source positions illustrate the generating scene. They are not estimated or supplied to inference. A receiver-exclusive partition is a task requirement. It is not an observed accuracy result. A valid group also requires every pair to pass physical admission. The panels are conceptual examples.}{fig:motivation}
+
+The source registry states field meanings, units, and uncertainty declarations \cite{ssn,sosa,emeterio2026}. The baseline also supplies class maps, while the extension estimates selected missing permutations within a known four-class vocabulary. One reference receiver retains its known map to fix the otherwise arbitrary common class naming. The method does not learn field definitions or new classes.
+
+Unit conversion, calibrated scoring, assignment, and signed clustering are established components \cite{guo,kuhn,bansal,baumann2025}. Permutation synchronization also estimates several maps jointly \cite{pachauri2013,chen2014}. Here, class correspondences must be recovered from uncertain RF reports whose event groups are initially unknown. We address this report-level alignment problem and test its limits:
+\begin{enumerate}[leftmargin=1.5em,itemsep=2pt]
+\item We specify an auditable RF observation contract. It separates representation, class-semantic, and instance alignment. Matched unit and vocabulary re-encodings leave canonical evidence and event partitions unchanged.
+\item We formulate missing class maps and event groups in one score model. Receiver-pair tables retain every candidate relative map. Exact conditional search provides a small-problem reference. We compare it with coordinate updates, reference-only fitting, and an adapted spectral synchronization method. A conditional identification argument states the role of a known reference and informative pair scores.
+\item We test the alignment across frozen scorers and independent descriptor scenes. Same-class collisions and classifier-error interventions expose the limits of semantic evidence. Integer programs measure the cost of approximate event grouping. Public records provide a separate check of metadata correspondence and clock preprocessing.
+\end{enumerate}
+
+The inference target is a bounded transmission. Receiver locations are known, while source locations and event count are hidden. The method starts after detection and does not evaluate a waveform front end \cite{hannotier2024,kropfreiter2024,yan2024}.
+
+Controlled descriptors isolate class-map and association effects. We retain the initial 800-scene benchmark for continuity. Separate adaptation and test scenes support the mapping comparisons and semantic stress tests. Public LoED records provide an auxiliary metadata check \cite{loed2020,loeddataset}. We use them to test reference-packet correspondence and preprocessing sensitivity. The controlled benchmark supplies the evidence for the class-probability mechanism.
+\FloatBarrier

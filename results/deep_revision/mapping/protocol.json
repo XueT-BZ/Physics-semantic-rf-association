@@ -1,0 +1,47 @@
+{
+  "replications": 10,
+  "test_scenes_per_replication": 80,
+  "adaptation_budgets": [
+    1,
+    5,
+    40
+  ],
+  "adaptation_seed": "100000000+100000*r+j",
+  "test_seed": "101000000+100000*r+j",
+  "hidden_map_seed": "102000000+r",
+  "known_receiver": 0,
+  "unknown_receivers": [
+    1,
+    2,
+    3
+  ],
+  "anchors_at_unknown_receivers": 0,
+  "classes": 4,
+  "new_scenes_disjoint_from_all_retained_splits": true,
+  "original_linear_fits_frozen": true,
+  "boosted": "Original training scenes and hyperparameters reconstructed; original stored temperature frozen",
+  "scoring_variants": [
+    "joint",
+    "unweighted",
+    "boosted"
+  ],
+  "methods": [
+    "unresolved",
+    "reference",
+    "spectral",
+    "coordinate",
+    "spectral_refined",
+    "exact",
+    "feedback",
+    "known"
+  ],
+  "physical_groups": "Same frozen physical scorer for all map solvers and semantic scorers",
+  "spectral_source": "https://papers.nips.cc/paper/2013/file/3df1d4b96d8976ff5986393e8767f5b2-Paper.pdf",
+  "spectral_adaptation": "Winner relative permutation per observed receiver pair; symmetric block matrix with identity diagonal; top-K eigenspace; reference-block Hungarian rounding",
+  "spectral_limitation": "Pair-score margins are discarded; not the original RF score objective or official implementation",
+  "timings": "cache_ms shared fixed-group preprocessing; solve_ms conditional map solve only; feedback includes additional group decoding and table rebuilding",
+  "selection": "Fixed grids and configurations; no new test label selects parameters or methods",
+  "independent_recovery_claim": "The joint map block is exact; the map/event problem remains approximate",
+  "coordinate_maximum_sweeps": 100,
+  "feedback_maximum_sweeps": 10
+}

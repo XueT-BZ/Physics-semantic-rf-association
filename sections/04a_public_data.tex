@@ -1,0 +1,46 @@
+\subsection{Auxiliary public-recording metadata check}\label{sec:public_data}
+\subsubsection{Source, inclusion rules, and independent capture blocks}
+We use the publisher-selected six-file urban LoRaWAN sample \cite{loed2020,loeddataset}, released under CC BY 4.0 with recorded publisher MD5 and download SHA-256. Training uses 3 March 2019, 2 April 2019, and 2 May 2020; calibration uses 3 July 2020; testing uses 3 August and 2 September 2020. Recorded timestamps, including those preceding filename dates, are retained.
+
+SHA-256 of the complete decoded payload defines the operational packet reference for labels and supervised fitting. Eligible records are CRC-valid unconfirmed uplinks with valid base64; message type comes from the payload header, avoiding the CSV's decimal-rendered binary labels. After exact deduplication, we exclude groups with repeated gateways, spans above 5 s, or identities shared across splits.
+
+These rules remove obvious repetitions without independently proving one transmission. We therefore evaluate \emph{reference-packet association}, with split totals in Table~\ref{tab:loed_inclusion} and per-file exclusions in Supplementary Section S7.
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{LoED sample and inclusion counts. A visible reference packet has reports at two or more gateways. Eligible test reports come from two gateways. The original dataset covers nine gateways. This experiment does not use all nine.}\label{tab:loed_inclusion}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/loed_inclusion}
+\end{adjustwidth}\end{table}
+
+Repeated payloads at individual gateways explain many 2019 exclusions. Results therefore concern identifiable receiver-exclusive references, not all traffic; CRC-invalid reports have no independent clutter labels. Reference hashes are stored separately, and scoring excludes addresses, frame counters, payloads and hashes, ports, and row indices.
+
+\subsubsection{Measured-input adaptation and frozen parameters}
+LoED has no waveform-derived uncertainty or class posteriors, so the reduced model uses reception time $t_i$, channel $F_i$, and decoded spreading factor $L_i$. Clock corrections $\widehat b_s$ use matching training references.
+
+Gateway pairs need ten references for clock fitting. Median differences define a weighted least-squares system whose minimum-norm solution fixes the common time origin; unsupported corrections remain zero. The supported pair median is 0.999985 s, without test-identity fitting.
+
+Corrected time is $t_i'=t_i-\widehat b_{s_i}$, with tolerance $G=\max(1\,\mathrm{ms},Q_{0.99})=3.02517\,\mathrm{ms}$. Here $Q_{0.99}$ is the 99th percentile of absolute calibration-reference residuals. This empirical tolerance does not carry the Gaussian guarantee of Proposition~\ref{prop:gate}. The features are
+\begin{equation}
+ \psi_{ij}=\left[\log\!\left(1+\frac{|t_i'-t_j'|}{G}\right),\;
+ \ind[F_i\ne F_j],\;\ind[L_i\ne L_j]\right].\label{eq:loed_features}
+\end{equation}
+Timing scoring uses the first coordinate; metadata scoring uses all three. Inputs are standardized and logistic coefficients fitted on training data, with temperature fitted on separate calibration data. Admission requires $|t_i'-t_j'|\leq G$.
+
+Reported channel frequency is not oscillator offset, and decoded spreading factor is not a probabilistic recognition output. We synthesize no geometry, RF uncertainty, or class posterior.
+
+Corrected timestamps define fixed 60 s windows without identity-based reassignment. Each scorer uses connected components, pairwise assignment followed by union, and constrained decoding.
+
+Evaluation retains singletons and counts window-split reference pairs as false negatives over each complete capture. We report captures separately and pool TP, FP, and FN. Two captures do not support deployment-population intervals based on individual pairs.
+
+\subsubsection{Measured outcomes and interpretation}
+The 23,677 reports contain 22,260 reference packets, including 1417 observed at both gateways. Metadata constraints produce 1411 true-positive, one false-positive, and six false-negative pairs: precision 0.9993, recall 0.9958, and F1 0.9975. On 3 August, TP is 900, FP 0, and FN 3 (F1 0.9983); on 2 September, TP is 511, FP 1, and FN 3 (F1 0.9961). Assignment and components give the same partition.
+
+Timing-only components produce seven false positives and one receiver conflict. Assignment and constraints each produce five false positives with F1 0.9961 (Table~\ref{tab:loed_results}).
+
+\begin{table}[!t]\begin{adjustwidth}{-\extralength}{0cm}
+\caption{Public-recording results. Values are reference-packet F1. Rx counts clusters with repeated receivers. Within each scorer, all methods use the same observations, scores, gates, and capture windows. We pool pair counts before calculating F1. We do not average rounded scores.}\label{tab:loed_results}
+\small\renewcommand{\arraystretch}{1.12}\input{tables/loed_results}
+\end{adjustwidth}\end{table}
+
+Shared decoded meanings support a reproducible metadata-to-packet procedure, but metadata already resolves nearly all ambiguity. The two-gateway check has no measured class posteriors or source-specific protocol vocabulary and offers little room to distinguish decoder accuracy.
+
+Assignment is already receiver-exclusive with two gateways, leaving higher-order grouping untested. Metadata F1 0.9975 does not validate multi-protocol robustness or RF uncertainty. Section~\ref{sec:public_sensitivity} tests the supervised preprocessing behind this result.

@@ -1,0 +1,12 @@
+{
+  "purpose": "Computational cost only; K-dependent probability vectors are not a new RF accuracy dataset",
+  "scaler_and_coefficients": "Frozen weighted linear r00; K enters compatibility and entropy normalization",
+  "groups": "12 arbitrary co-grouped report pairs for every receiver pair",
+  "repeats": 3,
+  "times": "Medians; tracemalloc disabled during timing",
+  "memory": "Separate measured Python-traced allocation peak; not process RSS and excludes untraced native library allocations",
+  "score_array_memory": "Arithmetic 8*Q bytes, not a measurement",
+  "state_limit": 1000000,
+  "cache_comparison": "Same five new adaptation scenes; full weighted RF objective reevaluated in every uncached joint state",
+  "no_accuracy_or_large_vocabulary_recovery_claim": true
+}

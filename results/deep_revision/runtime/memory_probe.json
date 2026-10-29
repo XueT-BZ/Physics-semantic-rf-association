@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "observations": 120,
+  "scene_seed": 120012000,
+  "before_bytes": {
+    "WorkingSetSize": 146747392,
+    "PeakWorkingSetSize": 146747392,
+    "PagefileUsage": 117489664,
+    "PeakPagefileUsage": 117489664
+  },
+  "after_bytes": {
+    "WorkingSetSize": 154292224,
+    "PeakWorkingSetSize": 650665984,
+    "PagefileUsage": 156315648,
+    "PeakPagefileUsage": 673423360
+  },
+  "measured_scope": "One isolated Windows process; includes loaded Python and numerical libraries.",
+  "not_a_universal_memory_bound": true,
+  "proven_optimal": true,
+  "variables": 7140,
+  "triangle_inequalities": 842520,
+  "sparse_initial_arrays_bytes": 40440960
+}

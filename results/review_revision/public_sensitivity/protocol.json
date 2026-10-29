@@ -1,0 +1,103 @@
+{
+  "settings": [
+    {
+      "name": "original_split",
+      "training": [
+        "2019-03-03",
+        "2019-04-02",
+        "2020-05-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "first_two_train",
+      "training": [
+        "2019-03-03",
+        "2019-04-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "latest_train_only",
+      "training": [
+        "2020-05-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "second_train_only",
+      "training": [
+        "2019-04-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "early_calibration",
+      "training": [
+        "2019-03-03"
+      ],
+      "calibration": "2019-04-02",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "middle_calibration",
+      "training": [
+        "2019-03-03",
+        "2019-04-02"
+      ],
+      "calibration": "2020-05-02",
+      "quantile": 0.99,
+      "clock_correction": true
+    },
+    {
+      "name": "uncorrected_clocks",
+      "training": [
+        "2019-03-03",
+        "2019-04-02",
+        "2020-05-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.99,
+      "clock_correction": false
+    },
+    {
+      "name": "gate_quantile_095",
+      "training": [
+        "2019-03-03",
+        "2019-04-02",
+        "2020-05-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.95,
+      "clock_correction": true
+    },
+    {
+      "name": "gate_quantile_0999",
+      "training": [
+        "2019-03-03",
+        "2019-04-02",
+        "2020-05-02"
+      ],
+      "calibration": "2020-07-03",
+      "quantile": 0.999,
+      "clock_correction": true
+    }
+  ],
+  "test_captures": [
+    "2020-08-03",
+    "2020-09-02"
+  ],
+  "window_seconds": 60.0,
+  "test_selection_used_for_parameter_fitting": false,
+  "no_synthetic_noise_or_posteriors": true,
+  "claim": "Preprocessing sensitivity only; no multi-protocol semantic validation."
+}

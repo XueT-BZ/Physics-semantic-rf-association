@@ -1,0 +1,38 @@
+\subsection{Completion of partially known class registries}\label{sec:partial_registry}
+Let $\mathcal U$ contain the receivers with missing map entries; receiver 0 retains its known reference map. At receiver $s$, disclosed anchors form $\mathcal H_s$, and $\mathcal P(\mathcal H_s)$ contains the compatible permutations. Maps remain fixed across adaptation and test. Each comparison freezes its scorer, temperature, and physical gate before map fitting. The objective accepts weighted linear, unweighted linear, or boosted evidence.
+
+Write $\mathcal C=(\mathcal C_b)_{b\in\mathcal B_A}$ for the adaptation partitions. Each $\mathcal C_b$ is a whole window partition. A plain $C$ denotes one cluster. The fixed-group objective is
+\begin{equation}
+ J_A(\mathbf M,\mathcal C)=\sum_{b\in\mathcal B_A}\sum_{i<j}
+ a_{ij}(\mathcal C_b)w_{ij}(\mathbf M),\qquad
+ \mathbf M\in\prod_{s\in\mathcal U}\mathcal P(\mathcal H_s).
+ \label{eq:partial_objective}
+\end{equation}
+Known receiver maps are held fixed. The fixed-group update is
+\begin{equation}
+ \mathbf M^+\in\argmax_{\mathbf M}J_A(\mathbf M,\mathcal C).
+ \label{eq:partial_update}
+\end{equation}
+For fixed groups, $J_A=\sum_{s<t}\Psi_{st}(M_s,M_t)$ sums co-grouped report scores by receiver pair. Log compatibility depends on relative permutation, requiring at most 24 evaluations per pair for four classes. Caching scores the full block of up to $24^3=13{,}824$ states for three unknown maps; anchors reduce the domain. Supplementary Section S11 derives and verifies this factorization.
+
+Let $U=|\mathcal U|$. Let $d_s$ count candidate maps at receiver $s$. A known map has $d_s=1$. With $a_s$ correct anchors, an unknown map has $d_s=(K-a_s)!$ candidates. The joint state count is
+\[
+ Q=\prod_{s\in\mathcal U}d_s\leq(K!)^U.
+\]
+With $P$ receiver-pair terms, cached summation costs $O(PQ)$ and stores $Q$ scores. The search remains factorial: four classes with six unknown receivers give 191,102,976 states, requiring 1.42 GiB for float64 scores alone. Six classes with three unknowns give 373,248,000 states. Blocks above one million states are rejected before allocation, while recovery tests use at most 13,824. Larger-block timings provide no larger-vocabulary accuracy evidence.
+
+This solves the conditional block within $10^{-10}$, without globally solving maps and events. Cheaper coordinate updates can stall because a source change affects agreement with every other source. Joint changes can recover support unavailable to individual updates, as the strict counterexample in Supplementary Section S11 shows.
+
+Physical-only groups initialize adaptation. Sequential estimation solves Equation~\eqref{eq:partial_update} once and freezes the map. Alternation re-decodes under current maps, accepts a partition only for strict gain over the previous feasible partition, and then refits maps. Ties retain the old state; at most ten sweeps are allowed. Accepted updates cannot lower $J_A$, but need not improve reference accuracy. Test maps remain frozen.
+
+Adaptation uses descriptors and provisional groups, never event labels, hidden entries, source positions, or clutter flags. Uniform vectors provide no map information, and incorrect groups can mislead estimation. A known reference resolves the common-renaming ambiguity that compatibility alone cannot remove. Hidden-entry accuracy and event F1 are therefore reported separately.
+
+\paragraph{When an anchored map can be identified.}
+Use a score graph containing every nonconstant receiver-pair term in the objective. A reference map fixes the names in its connected component. A separate component needs its own known map or enough anchors. Connectivity alone is insufficient: uniform class vectors provide no correspondence information, and indistinguishable class columns can be exchanged without changing any score.
+
+Let $\psi^*_{st}(R)$ be an ideal fixed-group score for relative permutation $R$. Let $R^*_{st}$ denote the true relative map. Suppose the score has a positive margin $\delta_{st}$ over every wrong relative map. Let the observed score differ from the ideal score by at most $\varepsilon_{st}$ for every candidate. Then the conditions
+\[
+ \psi^*_{st}(R^*_{st})-\psi^*_{st}(R)\geq\delta_{st}>2\varepsilon_{st}
+ \quad\text{for all }R\ne R^*_{st}
+\]
+on every edge of a connected graph ensure a unique anchored optimum (Supplementary Section S15). Ideal scores and error bounds are assumptions, not test-certified quantities. Class coverage, overlapping detections, and correct groups help but do not guarantee recovery or imply that five scenes suffice. The result concerns the mathematical objective; numerical updates use finite precision and cutoff $10^{-10}$.

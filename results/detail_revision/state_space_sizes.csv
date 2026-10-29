@@ -1,0 +1,5 @@
+classes,unknown_receivers,states,float64_score_array_bytes,score_array_gib,kind
+4,3,13824,110592,0.000102996826171875,arithmetic state count; not a runtime benchmark
+4,6,191102976,1528823808,1.423828125,arithmetic state count; not a runtime benchmark
+6,3,373248000,2985984000,2.780914306640625,arithmetic state count; not a runtime benchmark
+8,3,65548320768000,524386566144000,488373.046875,arithmetic state count; not a runtime benchmark

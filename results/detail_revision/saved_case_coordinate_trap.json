@@ -1,0 +1,92 @@
+{
+  "replicate": 0,
+  "adaptation_scenes": 5,
+  "unknown_sources": 3,
+  "anchors": 0,
+  "fixed_groups": "physical-only provisional groups",
+  "coordinate_objective": 201.01332154562647,
+  "best_single_source_gain": 0.0,
+  "joint_objective": 235.48335749475999,
+  "joint_gain": 34.47003594913352,
+  "joint_candidates": 13824,
+  "changed_receivers": 3,
+  "coordinate_mapping_accuracy": 0.5,
+  "coordinate_map": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      2,
+      1,
+      3,
+      0
+    ],
+    [
+      1,
+      3,
+      2,
+      0
+    ],
+    [
+      3,
+      1,
+      2,
+      0
+    ]
+  ],
+  "joint_map": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      3,
+      1,
+      2,
+      0
+    ],
+    [
+      1,
+      2,
+      3,
+      0
+    ],
+    [
+      2,
+      1,
+      3,
+      0
+    ]
+  ],
+  "hidden_map_evaluation_only": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      3,
+      1,
+      2,
+      0
+    ],
+    [
+      1,
+      2,
+      3,
+      0
+    ],
+    [
+      2,
+      1,
+      3,
+      0
+    ]
+  ]
+}

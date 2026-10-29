@@ -1,0 +1,16 @@
+{
+  "replications": 10,
+  "base_scenes_per_replication": 2,
+  "observations": [
+    20,
+    30,
+    40
+  ],
+  "selection": "First two existing test scenes with at least 40 reports; nested random report subsets selected without scores or labels.",
+  "seed_base": 85000000,
+  "solver_time_limit_s": 5.0,
+  "relative_gap_request": 0.0,
+  "highs_threads": 1,
+  "restart_first_edges": 8,
+  "only_solver_proven_optima_called_exact": true
+}
